@@ -1,0 +1,50 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=s2p_bert_class
+
+defaults:
+  - override /data: expression
+  - override /model: s2p_class
+  - override /callbacks: default
+  - override /trainer: ddp
+  - override /logger: csv
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+task_name: "s2p_bert_class"
+
+tags: ["dynamic_weights", "classification"]
+
+data:
+  batch_size: 256
+
+trainer:
+  min_epochs: 10
+  max_epochs: 2000
+  accelerator: gpu
+  devices: 2
+  num_nodes: 1
+  strategy: ddp_find_unused_parameters_true
+  sync_batchnorm: True
+
+model:
+  warm_up_step: 40
+  dynamic_weights: True
+  optimizer:
+    lr: 2e-5
+
+callbacks:
+  model_checkpoint:
+    monitor: "valid/total_loss"
+    mode: min
+    save_top_k: 5
+    verbose: True
+  early_stopping:
+    monitor: "valid/total_loss"
+    verbose: True
+    mode: min
+    patience: 10000
+
+seed: 12345
+test: True

@@ -1,0 +1,21 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - data: expression # choose datamodule with `test_dataloader()` for evaluation
+  - model: s2p_class
+  - logger: null
+  - trainer: gpu
+  - paths: default
+  - extras: default
+  - hydra: default
+
+task_name: "s2p_bert_class_evaluate"
+
+tags: ["classification", "dynamic"]
+
+# passing checkpoint path is necessary for evaluation
+ckpt_path: ???
+
+# passing tokenizer path for reconstructing midi
+tokenizer_path: ${paths.data_dir}/tokenizer_96.json
