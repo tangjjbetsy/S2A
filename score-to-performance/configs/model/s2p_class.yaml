@@ -1,0 +1,65 @@
+_target_: src.models.s2p_class_module.S2PLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.LambdaLR
+  _partial_: true
+
+warm_up_step: 10
+dynamic_weights: True
+
+net:
+  _target_: src.models.components.expression_bert_class.ExpressionBertLM
+  bert:
+    _target_: src.models.components.expression_bert_class.ExpressionBert
+    input_features: ["Pitch", "Velocity", "Duration", "IOI", "Position", "Bar"]
+    output_features: ${data.output_features}
+    # output_features: ["Pitch", "Velocity", "Duration", "IOI", "Position", "Bar"]
+    feature_boundaries:
+      Pitch: [0, 91]
+      Velocity: [0, 67]
+      Duration: [0, 1155]
+      IOI: [0, 771]
+      Position: [0, 387]
+      Bar: [0, 3003]
+      # DurDev: [0, 6147]
+    max_position_embeddings: 256
+    vocab_names:
+      - Pitch
+      - Velocity
+      - Duration
+      - IOI
+      - Position
+      - Bar
+      # - DurDev
+    position_embedding_type: "relative_key_query"
+    hidden_size: 256
+    num_hidden_layers: 4
+    precision: 16
+    num_attention_heads: 4
+    intermediate_size: 256
+    output_attentions: True
+    num_of_styles: 6
+    style_embed_integration_type: "add"
+    style_emb_size: 128
+    vocab_size:
+      Pitch: 92
+      Velocity: 68
+      Duration: 1156
+      IOI: 772
+      Position: 388
+      Bar: 3004
+    emb_size:
+      Pitch: 32
+      Velocity: 64
+      Duration: 256
+      IOI: 256
+      Position: 128
+      Bar: 256
+
+# compile model for faster training with pytorch 2.0
+compile: false

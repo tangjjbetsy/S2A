@@ -1,0 +1,64 @@
+_target_: src.models.s2p_module.S2PLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.LambdaLR
+  _partial_: true
+
+warm_up_step: 10
+normalize_loss: True
+penalty_outliers: False
+dynamic_weights: True
+loss_type: "l1"
+
+net:
+  _target_: src.models.components.expression_bert.ExpressionBertLM
+  bert:
+    _target_: src.models.components.expression_bert.ExpressionBert
+    input_features: ["Pitch", "Velocity", "Duration", "IOI", "Position", "Bar"]
+    output_features: ${data.output_features}
+    # output_features: ["Pitch", "Velocity", "Duration", "IOI", "Position", "Bar"]
+    feature_boundaries:
+      Pitch: [0, 91]
+      Velocity: [0, 67]
+      Duration: [0, 1155]
+      IOI: [0, 771]
+      Position: [0, 387]
+      Bar: [0, 3003]
+      # DurDev: [0, 6147]
+    max_position_embeddings: 256
+    vocab_names:
+      - Pitch
+      - Velocity
+      - Duration
+      - IOI
+      - Position
+      - Bar
+      # - DurDev
+    position_embedding_type: "relative_key_query"
+    hidden_size: 256
+    num_hidden_layers: 4
+    precision: 16
+    num_attention_heads: 4
+    intermediate_size: 256
+    output_attentions: True
+    num_of_styles: 6
+    style_embed_integration_type: "add"
+    style_emb_size: 128
+
+# classifier:
+#   _target_: src.models.components.style_cnn_net.StyleCNNNet
+#   n_classes: 6
+#   num_of_feature: 3
+#   max_len: 256
+#   kernel_sizes: [5, 5, 5, 3]
+#   dropout: 0.5
+#   dense_size: 512
+#   activation: 'relu'
+
+# compile model for faster training with pytorch 2.0
+compile: false
