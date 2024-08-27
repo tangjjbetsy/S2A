@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Page for Score to Audio: Integrating Systems to Transform Music Scores into Expressive Piano Audio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Score to Audio: Integrating Systems to Transform Music Scores into Expressive Piano Audio</h1>
+            <p align="center">Jingjing Tang, Erica Cooper, Xin Wang, Junichi Yamagishi, George Fazekas</p>
+        </div>
+        <div class="content">
+            <h2>Introduction</h2>
+            <p>
+                This demo page showcases the results of our research on transforming symbolic music scores into expressive piano performance audio. 
+                The approach combines a Transformer-based Expressive Performance Rendering (EPR) model with a fine-tuned neural MIDI synthesiser, 
+                offering a streamlined method for converting inexpressive score MIDI files into rich, expressive piano performances.
+            </p>
+            <p>
+                Our integrated system is designed to directly generate expressive audio performances from score inputs by combining MIDI-to-MIDI (M2M) 
+                and MIDI-to-Audio (M2A) models. The M2M model is responsible for rendering expressive MIDI files, while the M2A model, which has been 
+                fine-tuned for this task, generates the corresponding audio outputs. This demo page illustrates the improvement achieved through the 
+                fine-tuning of the M2A model and presents a comparison of the proposed system (M2M + M2A) with other existing systems.
+            </p>
+            <p>
+                The evaluation conducted in this study highlights the system's effectiveness in reconstructing human-like expressiveness 
+                and capturing the acoustic ambiance of environments such as concert halls and recording studios. The proposed system is the first of its kind 
+                to seamlessly convert inexpressive score MIDI files into expressive piano performance audios using purely deep learning models.
+            </p>
+            <!-- Section 1: Improvement of the Fine-tuned M2A Model -->
+            <h2>Fine-tuned M2A Model</h2>
+            <p>
+                This section demonstrates the improvements achieved by fine-tuning the M2A model. The audio samples (all from test set) before and after fine-tuning are presented 
+                below along with the groundtruth audio recordings, allowing for a direct comparison of the model's performance.
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Sample 1</th>
+                        <th>Sample 2</th>
+                        <th>Sample 3</th>
+                        <th>Sample 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Groundtruth</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/01606.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/02374.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/09450.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/10003.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <!-- Row 1: Before Fine-tuning -->
+                    <tr>
+                        <td>M2A (Before Fine-tuning)</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/01606_woft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/02374_woft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/09450_woft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/10003_woft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <!-- Row 2: After Fine-tuning -->
+                    <tr>
+                        <td>M2A (After Fine-tuning)</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/01606_ft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/02374_ft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/09450_ft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2A_cut/10003_ft.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr> 
+                </tbody>
+            </table>
+            <ul>
+            <li>Sample1: "Fantasiestücke, Op. 12: VI. Ende vom Lied", composed by Robert Schumann, performed by Sviatoslav Richter</li>
+            <li>Sample2: "English Suite No. 3 in G Minor, BWV 808: VI. Gigue", composed by Johann Sebastian Bach, performed by Friedrich Gulda</li>
+            <li>Sample3: "12 Etudes, Op. 10: No. 2. in A Minor - Chromatique", composed by Frédéric Chopin, performed by Sviatoslav Richter</li>
+            <li>Sample4: "24 Préludes, Op. 28: Prélude No. 13 in F-Sharp Major", composed by Frédéric Chopin, performed by Claudio Arrau</li>
+            </ul>
+
+            <!-- Section 2: Proposed System M2M + M2A Comparison -->
+            <h2>Comparison of Different Systems with Proposed M2M + M2A</h2>
+            <p>
+                In this section, we present a comparison between the proposed M2M + M2A system and other systems. Audio samples generated by different 
+                methods, including: 
+                <ol>
+                    <li>Groundtruth audio recording, </li> 
+                    <li>Groundtruth midi + Pianoteq, </li> 
+                    <li>Groundtruth midi + M2A, </li> 
+                    <li>M2M output + Pianoteq, </li> 
+                    <li>M2M output + M2A (proposed), </li> 
+                    <li>Baseline (proposed), </li> 
+                    <li>Score + Pianoteq, </li> 
+                </ol>
+                are provided for comparison. The results demonstrate 
+                how the integrated system effectively balances musical expressiveness with audio quality, outperforming the baseline models.
+            </p> 
+            <table>
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Sample A</th>
+                        <th>Sample B</th>
+                        <th>Sample C</th>
+                        <th>Sample D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Row 1: Groundtruth -->
+                    <tr>
+                        <td>Groundtruth Audio Recording</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/A/1_18_A_hp.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/B/1_18_B_hp.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/A/1_30_A_hp.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/C/1_30_C_hp.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <tr>
+                        <td>Groundtruth midi + Pianoteq</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/A/5_18_A_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/B/5_18_B_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/A/5_30_A_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/C/5_30_C_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <tr>
+                        <td>Groundtruth midi + M2A</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/A/3_18_A_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/B/3_18_B_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/A/3_30_A_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/C/3_30_C_perf.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <tr>
+                        <td>M2M output + Pianoteq</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/A/8_18_A_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/B/8_18_B_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/A/8_30_A_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/C/8_30_C_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <tr>
+                        <td>M2M output + M2A</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/A/6_18_A_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/B/6_18_B_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/A/6_30_A_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/C/6_30_C_generation.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <tr>
+                        <td>Baseline</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/A/9_18_A_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/B/9_18_B_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/A/9_30_A_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/C/9_30_C_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <tr>
+                        <td>Score + Pianoteq</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/A/11_18_A_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/18/B/11_18_B_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/A/11_30_A_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/30/C/11_30_C_score.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul>
+                <li>Sample1 & 2: "Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3 'The Hunt'", composed by Ludwig van Beethoven, performed by Daniel Barenboim</li>
+                <li>Sample3 & 4: "Piano Sonata No.30 in E, Op.109: 2. Prestissimo", composed by Ludwig van Beethoven, performed by Claudio Arrau</li>
+            </ul>
+
+
+
+            <h2>More and Longer Generation Samles from the Proposed M2M + M2A and Baseline Models</h2>
+            <p>
+                In this section, we present more and longer samples generated with our proposed M2M + M2A system and the baseline systems. The results demonstrate 
+                how the integrated system effectively balances musical expressiveness with audio quality, outperforming the baseline models.
+            </p> 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Sample 1</th>
+                        <th>Sample 2</th>
+                        <th>Sample 3</th>
+                        <th>Sample 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>M2M+M2A</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2M+M2A_cut/06197.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2M+M2A_cut/06393.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2M+M2A_cut/06605.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/M2M+M2A_cut/07604.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <!-- Row 1: Before Fine-tuning -->
+                    <tr>
+                        <td>Baseline</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/Baseline_cut/06197.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/Baseline_cut/06393.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/Baseline_cut/06605.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/Baseline_cut/07604.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                    <tr>
+                        <td>Groundtruth</td>
+                        <td><audio controls>
+                            <source src="./assets/audios/original_cut/06197.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/original_cut/06393.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/original_cut/06605.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                        <td><audio controls>
+                            <source src="./assets/audios/original_cut/07604.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul>
+                <li>Sample1: "Piano Sonata No.3 in C, Op.2 No.3: 2. Adagio", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+                <li>Sample2: "Piano Sonata No.9 in E, Op.14 No.1: 1. Allegro", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+                <li>Sample3: "Piano Sonata No. 31 in A-Flat Major, Op. 110: 2. Allegro molto", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+                <li>Sample4: "Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3: IV. Presto con fuoco", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Jingjing Tang, Center for Digital Music, Queen Mary University of London. All rights reserved.</p>
+    </footer>
+</body>
+</html>
