@@ -1,5 +1,5 @@
 # Score-to-Audio: Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores
-This repository contains the official implementation of our ICASSP 2025 paper, **"Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores."**
+This repository contains the official implementation of our ICASSP 2025 [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10890623), **"Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores."**
 
 ## Project Structure
 
