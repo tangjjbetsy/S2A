@@ -1,7 +1,7 @@
 
-# Fine-Tune the [M2A](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) Model
+# Midi-to-Audio Model
 
-## Fine-Tune the model for ATEPP Dataset
+## Fine-Tune the [M2A](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) for ATEPP Dataset
 
 ### Running
 
