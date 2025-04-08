@@ -42,7 +42,7 @@ Checkpoints could be downloaded from [here]().
 
 ### Evaluation
 
-Evaluate the model with the test set. Inferenced midis will be saved in the `logs/${EXP_DIR}/runs/${RUN_NAME}/predictions`. Note that the test set consists of processed alignment files not original scores
+Evaluate the model with the test set. Inferenced midis will be saved in the `logs/${EXP_DIR}/runs/${RUN_NAME}/predictions`.
 
 ```bash
 # Please configure the evaluation in configs/eval.yaml
