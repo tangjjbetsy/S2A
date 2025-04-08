@@ -1,8 +1,23 @@
-# Score-to-audio
-This repo contains code implementation for three sub-projects. For each project please refer to the README.md file inside the project folder.
+# Score-to-Audio: Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores
 
-The `midi-to-audio` project includes implementation of fine-tuning the model with ATEPP as well as with score-audio pairs.
+This repository contains the official implementation of our ICASSP 2025 paper, **"Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores."**
 
-The `score-to-performance` project includes implementation of a midi-to-midi model, aiming to add expression to the given scores and output performance midis.
+## Project Structure
 
-The `midi-valle` project implements VALL-E model for synthesising performance midis.
+- **`m2a/`**  
+  Contains the implementation for fine-tuning the MIDI-to-audio synthesis model using the ATEPP dataset, as well as the baseline model setup.
+
+- **`m2m/`**  
+  Includes the expressive performance rendering model, designed to generate expressive performance MIDI files from symbolic music scores.
+
+## How to Use
+
+Please refer to the `README.md` files inside each subdirectory (`m2a/` and `m2m/`) for detailed instructions on inference and generation of target MIDI or audio outputs.
+
+## Demo
+
+You can listen to the demo samples on our [project page](https://tangjjbetsy.github.io/S2A/).
+
+---
+
+Would you like me to help write the `README.md` for `m2a` or `m2m` as well?
