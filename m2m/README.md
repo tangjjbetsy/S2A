@@ -15,15 +15,11 @@ This is the M2M model implemented with the [lightning-hydra-template](https://gi
 #### Conda
 
 ```bash
-# clone project
-git clone https://github.com/tangjjbetsy/RHEPP-Score
-cd RHEPP-Score
-
 # create conda environment and install dependencies
-conda env create -f environment.yaml -n s2p
+conda env create -f environment.yaml
 
 # activate conda environment
-conda activate s2p
+conda activate m2m
 ```
 
 ## How to run
