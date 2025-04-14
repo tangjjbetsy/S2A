@@ -24,7 +24,7 @@ conda activate m2m
 
 ## How to run
 
-Please refer to [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) for a better mannul of how to use this repo. This repo strictly follows the template design.
+Please refer to [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) for more details on how to use this repo. This repo strictly follows the template design.
 
 ### Training
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
@@ -38,7 +38,7 @@ You can override any parameter from command line like this
 python src/train.py trainer.max_epochs=20 data.batch_size=64
 ```
 
-Checkpoints could be downloaded from [here]().
+Checkpoints could be downloaded from [here](https://drive.google.com/drive/folders/17lqEafXRI_mCUVnzjeq70NVqXD5VYTZI?usp=share_link).
 
 ### Evaluation
 
