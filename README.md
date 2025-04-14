@@ -29,8 +29,6 @@ The code is licensed under Apache License Version 2.0, following ESPnet. The pre
   booktitle={ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 
   title={Towards An Integrated Approach for Expressive Piano Performance Synthesis from Music Scores}, 
   year={2025},
-  volume={},
-  number={},
   pages={1-5},
   doi={10.1109/ICASSP49660.2025.10890623}}
 ```
