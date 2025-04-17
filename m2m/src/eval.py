@@ -245,7 +245,10 @@ def evaluate(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     tokenizer = ExpressionTok(params=Path(cfg.tokenizer_path))
 
     log.info("Starting evaluating!")
-    predictions = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
+    model_state_dict = torch.load(cfg.ckpt_path)
+    model.load_state_dict(model_state_dict["state_dict"], strict=False)
+    
+    predictions = trainer.predict(model=model, datamodule=datamodule)
     torch.save(predictions, cfg.paths.output_dir + "/predictions.pt")
     reconstruct_midi(predictions, cfg, tokenizer)
     metric_dict = trainer.callback_metrics

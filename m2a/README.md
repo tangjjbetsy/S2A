@@ -1,6 +1,34 @@
 
 # Midi-to-Audio Model
 
+## Installation
+
+1. Manually create conda enviroment:
+
+```bash
+conda create -p YOUR_DIR/.conda/envs/midi2wav python=3.9 -y
+conda activate YOUR_DIR/.conda/envs/midi2wav
+```
+
+2. You don't have to set up kaldi for this
+
+3. Install ESPnet
+```bath
+$ cd <midi2wav-root>/tools
+$ make TH_VERSION=1.8 CUDA_VERSION=11.1
+```
+Make sure the espnet version is `espnet==0.10` and `matplotlib` needs to be installed separately depending on the operation system.
+
+1. Extra dependencies:
+```
+pretty_midi==0.2.10
+wandb==0.12.9
+protobuf==3.19.3
+pandas==2.2.1
+librosa==0.10.1
+```
+*Please refer to the [MIDI-to-Audio repo](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) instructions for more details about installation.*
+
 ## Fine-Tune the [M2A](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) for ATEPP Dataset
 
 ### Running
@@ -30,6 +58,33 @@ To reproduce the result, please follow the original instruction given below to i
 
 It would be recommended to prepare the data separately using `local_score/data.sh` first and then run from **stage 2 to 5** to prepare everything else. Then you could run **stage 6** for training, and **stage 7** for inferencing.
 
-------------------------------------
-Please refer to the [MIDI-to-Audio repo](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) instructions for installation.
-------------------------------------
+## Inference
+To inference the audio of one or several midi files, please change the `mode` in `local/data.sh` to `"inference":
+```
+mode="inference"
+inference_path=PATH_TO_MIDI_FOLDER
+```
+Then, run `local_data.sh` to prepare the segments and meta. 
+
+Run the `egs2/maestro/tts1/run.sh` from ``stage 2 to 3`` by
+```
+./run.sh --stage 2 --stop_stage 3 --ngpu ${num_gpu} --tts_task gan_mta
+```
+
+Create a `feats_type` file under `dump/raw/test` by
+```
+mkdir -p dump/raw/test
+echo "raw" > dump/raw/test/feats_type
+echo "'feats_type' file created with content 'raw' in dump/raw/test"
+```
+
+Then, run the `egs2/maestro/tts1/run.sh` to inference the audio by
+```
+./run.sh --stage 7 --stop_stage 7 --ngpu ${num_gpu} --tts_task gan_mta
+```
+
+To concatenate the audio files, please run the the following command:
+```
+# Wav segments is usually saved to `exp/EXP_NAME/decode_train.total_count.best/test/wav`
+python pyscripts/concatenate_audio.py PATH_TO_SEGMENTS
+```

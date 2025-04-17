@@ -77,7 +77,8 @@ def main(db_root, maestro_root):
         """
 
 def main_atepp(db_root, tgt_root):
-    f_csv_dir = os.path.join(db_root, 'ATEPP-process/ATEPP-final-selection.csv')
+    csv_dir = 'ATEPP-process/ATEPP-final-selection.csv' # Replace with the correct path to your CSV file
+    f_csv_dir = os.path.join(db_root, csv_dir)
     df_dataset = pd.read_csv(f_csv_dir)
     dataset = defaultdict(dict)
     uttid_list = []
@@ -139,8 +140,7 @@ def main_atepp(db_root, tgt_root):
         f_utt2spk.close()
         """
         
-
-def main_inference(db_root, tgt_root):
+def main_m2m(db_root, tgt_root, inference_path):
     f_csv_dir = os.path.join(db_root, 'ATEPP-s2a/ATEPP-s2a.csv')
     df_dataset = pd.read_csv(f_csv_dir)
     dataset = defaultdict(dict)
@@ -178,7 +178,7 @@ def main_inference(db_root, tgt_root):
             os.path.join(tar_midi_dir, os.path.basename(info['midi_filename']))
         ))
         """ 
-        inference_path = "/home/smg/v-jtbetsy/projects/lightning-hydra-template/logs/s2p_bert_no_activation_evaluate/runs/2024-05-16_11-45-03/predictions/"
+        # inference_path = "/home/smg/v-jtbetsy/projects/lightning-hydra-template/logs/s2p_bert_no_activation_evaluate/runs/2024-05-16_11-45-03/predictions/"
         
         utt2wav[info['split']].append('{} {}\n'.format("_".join([uttid]), os.path.join(db_root, 'ATEPP-s2a', info['midi_path'].replace(".mid", ".mp3"))))
         if info['split'] == "test":
@@ -208,9 +208,38 @@ def main_inference(db_root, tgt_root):
         f_utt2spk.close()
         """
 
-    
+def main_inference(inference_path):
+    files = glob.glob(f"{inference_path}/*.midi")
+    uttid_list = []
+    dataset = defaultdict(list)
+    for file in files:
+        prefix = file.split("/")[-1].split(".")[0]
+        dataset[prefix] = file
+        uttid_list.append(prefix)
+    uttid_list.sort() # sort the uttid
+    utt2text = defaultdict(list)
+    for uttid in uttid_list:
+       utt2text['test'].append('{} {}\n'.format("_".join([uttid]), dataset[uttid]))
+       
+    for split in ['test']:
+        if not os.path.exists(os.path.join(tgt_root, split)):
+            os.makedirs(os.path.join(tgt_root, split))
+        f_utt2text = open(os.path.join(tgt_root, split, 'text'), 'w')
+        for item in utt2text[split]:
+            f_utt2text.write(item)
+        f_utt2text.close()
+
 # end def
 if __name__ == '__main__':
     db_root = sys.argv[1]
-    data = sys.argv[2]
-    main_inference(db_root, data)
+    tgt_root = sys.argv[2]
+    mode = sys.argv[3]
+    
+    if mode == "train":
+        main_atepp(db_root, tgt_root)
+    elif mode == "m2m":
+        inference_path = sys.argv[4]
+        main_m2m(db_root, tgt_root, inference_path)
+    elif mode == "inference":
+        inference_path = sys.argv[4]
+        main_inference(inference_path)

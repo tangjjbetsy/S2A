@@ -51,7 +51,7 @@ python src/eval.py ckpt_path = PATH_TO_SAVED_MODEL
 
 ### Inference
 
-To be provided soon.
+To be provided soon as a ColabNotebook.
 
 <!-- ### Scripts
 

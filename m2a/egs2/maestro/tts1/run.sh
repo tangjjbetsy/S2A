@@ -59,6 +59,7 @@ g2p=g2p_en_no_space # Include no word separator
     --train_set "${train_set}" \
     --valid_set "${valid_set}" \
     --test_sets "${test_sets}" \
+    --datadir "${datadir}" \
     --srctexts "${datadir}/${train_set}/text" \
     --stage 1 \
     --stop_stage 6 \

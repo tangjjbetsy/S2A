@@ -40,6 +40,7 @@ inference_nj=8       # The number of parallel jobs in decoding.
 gpu_inference=false  # Whether to perform gpu decoding.
 dumpdir=dump         # Directory to dump features.
 expdir=exp           # Directory to save experiments.
+datadir=data         # Directory to saved data.
 python=python        # Specify python to execute espnet commands.
 
 # Data preparation related
@@ -238,7 +239,7 @@ fi
 token_list="${token_listdir}/tokens.txt"
 
 # Check old version token list dir existence
-if [ -e ${datadir}/token_list ] && [ ! -e "${dumpdir}/token_list" ]; then
+if [ -e "${datadir}/token_list" ] && [ ! -e "${dumpdir}/token_list" ]; then
     log "Default token_list directory path is changed from data to ${dumpdir}."
     log "Copy ${datadir}/token_list to ${dumpdir}/token_list for the compatibility."
     [ ! -e ${dumpdir} ] && mkdir -p ${dumpdir}
@@ -327,7 +328,7 @@ if ! "${skip_data_prep}"; then
         # i.e. the input file format and rate is same as the output.
 
         log "Stage 2: Format wav.scp: ${datadir}/ -> ${data_feats}/"
-        for dset in "${train_set}" "${valid_set}" ${test_sets}; do
+        for dset in ${test_sets}; do
             if [ "${dset}" = "${train_set}" ] || [ "${dset}" = "${valid_set}" ]; then
                 _suf="/org"
             else
@@ -1000,14 +1001,13 @@ if ! "${skip_eval}"; then
                 ${python} -m espnet2.bin."${tts_task}_inference" \
                     --ngpu "${_ngpu}" \
                     --data_path_and_name_and_type "${_data}/text,midi,npz" \
-                    --data_path_and_name_and_type ${_speech_data}/${_scp},audio,${_type} \
                     --key_file "${_logdir}"/keys.JOB.scp \
                     --model_file "${tts_exp}"/"${inference_model}" \
                     --train_config "${tts_exp}"/config.yaml \
                     --output_dir "${_logdir}"/output.JOB \
                     --vocoder_file "${vocoder_file}" \
                     ${_opts} ${_ex_opts} ${inference_args}
-
+                    # --data_path_and_name_and_type ${_speech_data}/${_scp},audio,${_type} \
             # 4. Concatenates the output files from each jobs
             if [ -e "${_logdir}/output.${_nj}/norm" ]; then
                 mkdir -p "${_dir}"/norm
@@ -1036,13 +1036,13 @@ if ! "${skip_eval}"; then
                     echo "$(basename "${line}" .wav) ${line}"
                 done | LC_ALL=C sort -k1 > "${_dir}/wav/wav.scp"
             fi
-            if [ -e "${_logdir}/output.${_nj}/att_ws" ]; then
-                mkdir -p "${_dir}"/att_ws
-                for i in $(seq "${_nj}"); do
-                    mv -u "${_logdir}/output.${i}"/att_ws/*.png "${_dir}"/att_ws
-                    rm -rf "${_logdir}/output.${i}"/att_ws
-                done
-            fi
+            # if [ -e "${_logdir}/output.${_nj}/att_ws" ]; then
+            #     mkdir -p "${_dir}"/att_ws
+            #     for i in $(seq "${_nj}"); do
+            #         mv -u "${_logdir}/output.${i}"/att_ws/*.png "${_dir}"/att_ws
+            #         rm -rf "${_logdir}/output.${i}"/att_ws
+            #     done
+            # fi
             if [ -e "${_logdir}/output.${_nj}/durations" ]; then
                 for i in $(seq "${_nj}"); do
                      cat "${_logdir}/output.${i}/durations/durations"
@@ -1053,13 +1053,13 @@ if ! "${skip_eval}"; then
                      cat "${_logdir}/output.${i}/focus_rates/focus_rates"
                 done | LC_ALL=C sort -k1 > "${_dir}/focus_rates"
             fi
-            if [ -e "${_logdir}/output.${_nj}/probs" ]; then
-                mkdir -p "${_dir}"/probs
-                for i in $(seq "${_nj}"); do
-                    mv -u "${_logdir}/output.${i}"/probs/*.png "${_dir}"/probs
-                    rm -rf "${_logdir}/output.${i}"/probs
-                done
-            fi
+            # if [ -e "${_logdir}/output.${_nj}/probs" ]; then
+            #     mkdir -p "${_dir}"/probs
+            #     for i in $(seq "${_nj}"); do
+            #         mv -u "${_logdir}/output.${i}"/probs/*.png "${_dir}"/probs
+            #         rm -rf "${_logdir}/output.${i}"/probs
+            #     done
+            # fi
         done
     fi
 else

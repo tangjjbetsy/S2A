@@ -16,6 +16,10 @@ stop_stage=2
 
 sample_rate=16000
 num_segment_frame=800
+path_to_data="/home/smg/v-jtbetsy/DATA"
+datadir="data"
+mode="train" #or "inference", "m2m"
+inference_path="inference/" #folder of midis to be synthesized
 
 log "$0 $*"
 . utils/parse_options.sh
@@ -52,7 +56,7 @@ if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
     # text: wav_id midi_dir
     [ -e data ] && rm -r data
     # python local/data_parse.py "${db_root}" data
-    python local/data_parse.py "/home/smg/v-jtbetsy/DATA" data
+    python local/data_parse.py ${path_to_data} ${datadir} ${mode} ${inference_path}
 fi
 
 if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
@@ -62,7 +66,7 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     # text_segments.scp (eg: segid data/{train/val/text}/text_segments/{segid}.npz)
 
     for dset in "${train_set}" "${valid_set}" ${test_sets}; do
-        python local/data_segments.py --wav_dir data/"${dset}"/wav.scp \
+        python local/data_segments.py ${mode} --wav_dir data/"${dset}"/wav.scp \
             --wav_segments_dir data/"${dset}"/wav_segments \
             --text_dir data/"${dset}"/text \
             --text_segments_dir data/"${dset}"/text_segments \

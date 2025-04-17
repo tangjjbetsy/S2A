@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import librosa
 import pretty_midi
@@ -74,6 +75,46 @@ def segment_func(midi_wav_args_zip):
         i += 1
     return utt_id_list
 
+def segment_midi_func(midi_wav_args_zip):
+    midi_item = midi_wav_args_zip[0]
+    args = midi_wav_args_zip[1]
+    midi_id, midi_dir = midi_item.strip().split()
+
+    up_sample_rate = FRAME_SHIFT_MS / 1000 * args.sample_rate
+    frame_length_point = int(FRAME_LENGTH_MS / 1000 * args.sample_rate)
+    frame_shift_point = int(FRAME_SHIFT_MS / 1000 * args.sample_rate)
+    segment_length_point = (args.num_segment_frame - 1) * frame_shift_point + frame_length_point
+
+    pretty_midi.pretty_midi.MAX_TICK = 1e20
+
+    try:
+        mid_ob = pretty_midi.PrettyMIDI(midi_dir)
+        # mid_ob.instruments[0] = insert_pedalling(mid_ob.instruments[0])
+    except:
+        raise ValueError('cannot load midifile from {}'.format(midi_dir))
+    if len(mid_ob.instruments) > 1:
+        print("Track has >1 instrument %s" % (midi_dir))
+    midi = mid_ob.get_piano_roll(fs=args.sample_rate/up_sample_rate)
+    utt_id_list = []
+    print('split uttid: {}'.format(midi_id))
+    i = 0
+    while int(args.num_segment_frame*i) < midi.shape[1]:
+        utt_id = "{}_{}".format(midi_id, i)
+        midi_segment_dir = os.path.join(args.text_segments_dir, utt_id + '.npz')
+        utt_id_list.append(utt_id)
+        if midi.shape[1] - int(args.num_segment_frame*i) < args.num_segment_frame:
+            midi_segment = midi[:, int(args.num_segment_frame*i):]
+        else:
+            midi_segment = midi[:, int(args.num_segment_frame*i):int(args.num_segment_frame*(i+1))]
+        sparse_midi_segment = scipy.sparse.csc_matrix(midi_segment)
+
+        if not os.path.isdir(os.path.dirname(midi_segment_dir)):
+            os.makedirs(os.path.dirname(midi_segment_dir))
+        scipy.sparse.save_npz(midi_segment_dir, sparse_midi_segment)
+
+        i += 1
+    return utt_id_list
+
 def main():
     # parser
     parser = argparse.ArgumentParser(description='generate segments')
@@ -136,7 +177,57 @@ def main():
         f_midi_segments.write(midi_seg)
     f_wav_segments.close()
     f_midi_segments.close()
+    
+def main_inference():
+    # parser
+    parser = argparse.ArgumentParser(description='generate segments')
+    parser.add_argument('--text_dir', type=str, default='',
+                        help='directory of text (directory of midi)')
+    parser.add_argument('--text_segments_dir', type=str, default='',
+                        help='directory of segments for text')
+    parser.add_argument('--sample_rate', type=int, default=24000,
+                        help='number of sample rate')
+    parser.add_argument('--num_segment_frame', type=float, default=800,
+                        help='number of frames in each segment')
+    parser.add_argument('--begin_cut', type=float, default=2,
+                        help='the beginning of the frame')
+    parser.add_argument('--end_cut', type=float, default=2,
+                        help='the end of the frame')
+
+    args = parser.parse_args()
+
+    f_midi = open(args.text_dir, 'r')
+    lines_midi = f_midi.readlines()
+
+    midi_segments_list = []
+    midi_wav_args_list = []
+    for midi_item in lines_midi:
+        midi_id, midi_dir = midi_item.strip().split()
+        print(midi_item)
+        midi_wav_args_list.append([midi_item, args])
+
+    pool = multiprocessing.Pool(processes=1)
+    utt_id_all_list = pool.map(segment_midi_func, midi_wav_args_list)
+    utt_id_all_list_flatten = [utt_id for utt_id_list in utt_id_all_list for utt_id in utt_id_list]
+
+    # write "wav_segments.scp" & "text_segments 0"
+    utt_id_all_list_flatten.sort()
+    for utt_id in utt_id_all_list_flatten:
+        midi_segment_dir = os.path.join(args.text_segments_dir, utt_id + '.npz')
+        midi_segments_list.append('{} {}\n'.format(utt_id, midi_segment_dir))
+
+    midi_set_dir = os.path.join(
+        os.path.dirname(args.text_dir), 'text_segments.scp'
+    )
+    f_midi_segments = open(midi_set_dir, 'w')
+    for midi_seg in midi_segments_list:
+        f_midi_segments.write(midi_seg)
+    f_midi_segments.close()
 
 
 if __name__ == "__main__":
-    main()
+    mode = sys.argv[1]
+    if sys.argv[1] == 'inference':
+        main_inference()
+    else:
+        main()
