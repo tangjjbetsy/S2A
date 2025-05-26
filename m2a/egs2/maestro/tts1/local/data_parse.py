@@ -77,7 +77,7 @@ def main(db_root, maestro_root):
         """
 
 def main_atepp(db_root, tgt_root):
-    csv_dir = 'ATEPP-process/ATEPP-final-selection.csv' # Replace with the correct path to your CSV file
+    csv_dir = f'{db_root}/ATEPP-fine_tune.csv' # Replace with the correct path to your CSV file
     f_csv_dir = os.path.join(db_root, csv_dir)
     df_dataset = pd.read_csv(f_csv_dir)
     dataset = defaultdict(dict)
@@ -86,10 +86,6 @@ def main_atepp(db_root, tgt_root):
         prefix = os.path.basename(row[1]['midi_path'])[:-4]
         dataset[prefix] = row[1]
         uttid_list.append(prefix)
-    # datalist_audio = glob.glob(os.path.join(db_root, 'ATEPP-selection/*/*.mp3'), recursive=True)
-    # datalist_midi = glob.glob(os.path.join(db_root, 'ATEPP-selection/*/*.mid'), recursive=True)
-    # assert len(list(dataset.keys())) == len(datalist_audio)
-    # assert len(list(dataset.keys())) == len(datalist_midi)
 
     uttid_list.sort() # sort the uttid
     utt2wav = defaultdict(list)
@@ -141,7 +137,7 @@ def main_atepp(db_root, tgt_root):
         """
         
 def main_m2m(db_root, tgt_root, inference_path):
-    f_csv_dir = os.path.join(db_root, 'ATEPP-s2a/ATEPP-s2a.csv')
+    f_csv_dir = os.path.join(db_root, 'ATEPP-s2a.csv')
     df_dataset = pd.read_csv(f_csv_dir)
     dataset = defaultdict(dict)
     uttid_list = []
@@ -149,10 +145,6 @@ def main_m2m(db_root, tgt_root, inference_path):
         prefix = os.path.basename(row[1]['midi_path'])[:-4]
         dataset[prefix] = row[1]
         uttid_list.append(prefix)
-    # datalist_audio = glob.glob(os.path.join(db_root, 'ATEPP-selection/*/*.mp3'), recursive=True)
-    # datalist_midi = glob.glob(os.path.join(db_root, 'ATEPP-selection/*/*.mid'), recursive=True)
-    # assert len(list(dataset.keys())) == len(datalist_audio)
-    # assert len(list(dataset.keys())) == len(datalist_midi)
 
     uttid_list.sort() # sort the uttid
     utt2wav = defaultdict(list)
@@ -209,7 +201,7 @@ def main_m2m(db_root, tgt_root, inference_path):
         """
 
 def main_inference(inference_path):
-    files = glob.glob(f"{inference_path}/*.midi")
+    files = glob.glob(f"{inference_path}/*.midi") + glob.glob(f"{inference_path}/*.mid")
     uttid_list = []
     dataset = defaultdict(list)
     for file in files:

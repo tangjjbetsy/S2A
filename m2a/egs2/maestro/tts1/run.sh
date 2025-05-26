@@ -5,6 +5,11 @@ set -e
 set -u
 set -o pipefail
 
+log() {
+    local fname=${BASH_SOURCE[1]##*/}
+    echo -e "$(date '+%Y-%m-%dT%H:%M:%S') (${fname}:${BASH_LINENO[0]}:${FUNCNAME[1]}) $*"
+}
+
 fs=24000
 n_fft=32768
 # n_fft=8192
@@ -23,6 +28,10 @@ train_set=train
 valid_set=validation
 test_sets=test
 datadir=data
+stage=2
+stop_stage=6
+ngpu=1
+tts_task=gan_mta # gan_mta or score_to_audio
 # datadir=data_spk_lang #score-to-audio
 
 # train_config=conf/train.yaml
@@ -32,11 +41,11 @@ train_config=conf/tuning/finetune_joint_transformer_hifigan_atepp.yaml
 inference_config=conf/decode.yaml
 inference_model=train.total_count.best.pth
 
-# g2p=g2p_en # Include word separator
 g2p=g2p_en_no_space # Include no word separator
 
+log "$0 $*"
+. utils/parse_options.sh "$@"
 
-# --srctexts "data/${train_set}/text" \
 
 ./midi_to_wav.sh \
     --lang en \
@@ -61,10 +70,10 @@ g2p=g2p_en_no_space # Include no word separator
     --test_sets "${test_sets}" \
     --datadir "${datadir}" \
     --srctexts "${datadir}/${train_set}/text" \
-    --stage 1 \
-    --stop_stage 6 \
-    --ngpu 4 \
-    --tts_task gan_mta \
+    --stage ${stage} \
+    --stop_stage ${stop_stage} \
+    --ngpu ${ngpu} \
+    --tts_task ${tts_task} \
     --gpu_inference true \
     --skip_data_prep false \
     # --tag finetune_joint_transformer_hifigan_atepp \ # midi-to-audio fine-tune

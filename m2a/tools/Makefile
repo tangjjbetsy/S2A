@@ -26,9 +26,9 @@ WITH_OMP=ON
 
 .PHONY: all clean
 
-all: showenv conda_packages.done python ffmpeg.done sctk check_install
+all: showenv conda_packages.done python ffmpeg.done check_install
 
-python: activate_python.sh setuptools.done packaging.done espnet.done pytorch.done chainer.done fairscale.done torch_optimizer.done flash_attn.done lightning.done
+python: activate_python.sh setuptools.done packaging.done espnet.done pytorch.done
 extra: warp-transducer.done nkf.done moses.done mwerSegmenter.done pesq kenlm.done pyopenjtalk.done py3mmseg.done beamformit.done fairseq.done s3prl.done k2.done transformers.done phonemizer.done longformer.done muskits.done whisper.done rvad_fast.done sounfile_test parallel-wavegan.done lora.done sph2pipe torcheval.done
 
 activate_python.sh:
@@ -81,10 +81,6 @@ else
 endif
 	touch ffmpeg.done
 
-sctk: sctk/bin/sclite
-sctk/bin/sclite:
-	./installers/install_sctk.sh
-
 sph2pipe: sph2pipe/sph2pipe
 sph2pipe/sph2pipe:
 	./installers/install_sph2pipe.sh
@@ -120,12 +116,8 @@ else
 endif
 	touch pytorch.done
 
-lightning.done: pytorch.done
-	. ./activate_python.sh && ./installers/install_lightning.sh
-	touch lightning.done
-
 # NOTE(kamo): conda_packages is not necessary for installation of espnet, but add it the dependencies just in case.
-espnet.done: pytorch.done conda_packages.done lightning.done
+espnet.done: pytorch.done conda_packages.done
 	@echo NUMPY_VERSION=$(shell . ./activate_python.sh && python3 -c "import numpy; print(numpy.__version__)")
 	. ./activate_python.sh && python3 -m pip install -e "..[train, recipe]"  # Install editable mode by default
 	@echo NUMPY_VERSION=$(shell . ./activate_python.sh && python3 -c "import numpy; print(numpy.__version__)")
@@ -134,10 +126,6 @@ espnet.done: pytorch.done conda_packages.done lightning.done
 
 sounfile_test: espnet.done
 	. ./activate_python.sh && python3 ./test_soundfile.py
-
-chainer.done: espnet.done
-	. ./activate_python.sh && ./installers/install_chainer.sh "${CUDA_VERSION}"
-	touch chainer.done
 
 warp-transducer.done: pytorch.done conda_packages.done
 ifeq ($(strip $(CPU_ONLY)),)
@@ -170,18 +158,6 @@ else
 	echo "Warning: ./installers/install_phonemizer.sh requires WITH_OMP=ON"
 endif
 
-speechbrain.done: espnet.done conda_packages.done
-	. ./activate_python.sh && ./installers/install_speechbrain.sh
-	touch speechbrain.done
-
-mfa.done: espnet.done pyopenjtalk.done phonemizer.done conda_packages.done
-ifneq ($(strip $(USE_CONDA)),)
-	. ./activate_python.sh && ./installers/install_mfa.sh "true"
-else
-	. ./activate_python.sh && ./installers/install_mfa.sh "false"
-endif
-	touch mfa.done
-
 moses.done:
 	git clone --depth 1 https://github.com/moses-smt/mosesdecoder.git moses
 	touch moses.done
@@ -202,18 +178,6 @@ py3mmseg.done: espnet.done
 	. ./activate_python.sh && ./installers/install_py3mmseg.sh
 	touch py3mmseg.done
 
-beamformit.done:
-	./installers/install_beamformit.sh
-	touch beamformit.done
-
-torch_optimizer.done: espnet.done
-	. ./activate_python.sh && ./installers/install_torch_optimizer.sh
-	touch torch_optimizer.done
-
-fairscale.done: espnet.done
-	. ./activate_python.sh && ./installers/install_fairscale.sh
-	touch fairscale.done
-
 fairseq.done: espnet.done
 	. ./activate_python.sh && ./installers/install_fairseq.sh
 	touch fairseq.done
@@ -221,14 +185,6 @@ fairseq.done: espnet.done
 s3prl.done: espnet.done
 	. ./activate_python.sh && ./installers/install_s3prl.sh
 	touch s3prl.done
-
-whisper.done: espnet.done
-	. ./activate_python.sh && ./installers/install_whisper.sh
-	touch whisper.done
-
-lora.done: espnet.done
-	. ./activate_python.sh && ./installers/install_lora.sh
-	touch lora.done
 
 k2.done: espnet.done
 	. ./activate_python.sh && ./installers/install_k2.sh
@@ -245,34 +201,6 @@ transformers.done: espnet.done
 torcheval.done: pytorch.done
 	. ./activate_python.sh && ./installers/install_torcheval.sh
 	touch torcheval.done
-
-parallel-wavegan.done: espnet.done
-	. ./activate_python.sh && ./installers/install_parallel-wavegan.sh
-	touch parallel-wavegan.done
-
-longformer.done: espnet.done
-	. ./activate_python.sh && ./installers/install_longformer.sh
-	touch longformer.done
-
-flash_attn.done: espnet.done
-	. ./activate_python.sh && ./installers/install_flash_attn.sh
-	touch flash_attn.done
-
-muskits.done: espnet.done
-	. ./activate_python.sh && ./installers/install_muskits.sh
-	touch muskits.done
-
-cauchy_mult.done: espnet.done
-	. ./activate_python.sh && ./installers/install_cauchy_mult.sh
-	touch cauchy_mult.done
-
-rvad_fast.done: espnet.done
-	git clone https://github.com/zhenghuatan/rVADfast.git
-	touch rvad_fast.done
-
-discrete_speech_metrics.done: espnet.done
-	. ./activate_python.sh && ./installers/install_discrete_speech_metrics.sh
-	touch discrete_speech_metrics.done
 
 versa.done: espnet.done
 	. ./activate_python.sh && ./installers/install_versa.sh

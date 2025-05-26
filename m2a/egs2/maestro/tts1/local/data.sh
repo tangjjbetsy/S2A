@@ -14,20 +14,21 @@ SECONDS=0
 stage=0
 stop_stage=2
 
+# Default values
 sample_rate=16000
 num_segment_frame=800
 path_to_data="/home/smg/v-jtbetsy/DATA"
 datadir="data"
-mode="train" #or "inference", "m2m"
-inference_path="inference/" #folder of midis to be synthesized
+mode="train" #or "inference" or "m2m"
+inference_path="/data/scratch/acw555/test_s2a"
 
 log "$0 $*"
-. utils/parse_options.sh
+. utils/parse_options.sh "$@"
 
-if [ $# -ne 0 ]; then
-    log "Error: No positional arguments are required."
-    exit 2
-fi
+# if [ $# -ne 0 ]; then
+#     log "Error: No positional arguments are required."
+#     exit 2
+# fi
 
 . ./path.sh || exit 1;
 . ./cmd.sh || exit 1;
