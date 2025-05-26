@@ -13,6 +13,8 @@ This repository contains the official implementation of our ICASSP 2025 [paper](
 
 Please refer to the `README.md` files inside each subdirectory (`m2a/` and `m2m/`) for detailed instructions on inference and generation of target MIDI or audio outputs.
 
+As for reproducting objective evaluation results of the m2a model, please refer to the `s2a_objective_evaluation/README.md` file. For the m2m model, the matrix could be reproduced by running the evaluation script in the `m2m/` directory.
+
 ## Demo
 You can listen to the demo samples on our [project page](https://tangjjbetsy.github.io/S2A/).
 

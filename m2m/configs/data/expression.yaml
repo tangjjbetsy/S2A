@@ -1,0 +1,65 @@
+# Configuration for ExpressionDataModule
+_target_: src.data.expression_datamodule.ExpressionDataModule
+
+# Directory settings
+data_dir: ${paths.data_dir}
+output_data: ${paths.data_dir}/data.npz
+load_data: from_files #Or from npz
+output_tokenizer: ${paths.data_dir}/tokenizer_96.json
+load_tokenizer: ${paths.data_dir}/tokenizer_96.json
+csv_file: ${paths.csv_path}
+data_folders: 
+  - ${paths.performance_dir}
+  - ${paths.score_dir}
+
+# Data processing configurations
+train_val_test_split: [0.8, 0.1, 0.1]  # Split ratios for train, validation, and test sets
+batch_size: 32
+num_workers: 8
+max_len: 256  # Maximum length of sequences
+pin_memory: True
+mode: "token"  # Mode of data processing, e.g., "token"
+
+# Features to include
+feature_list: [
+    "Pitch",
+    "Velocity",
+    "Duration",
+    "IOI",
+    "Onset",
+    # "Offset",
+    # "OTD",
+    # "DurDev" only for alignments
+]
+
+tokenizer_conf:
+  pitch_range: (21, 109)
+  beat_res:
+    (0, 12): 96
+  num_velocities: 64
+  special_tokens: ["PAD", "BOS", "EOS", "MASK"]
+  use_chords: False
+  use_rests: False
+  use_tempos: False
+  use_time_signatures: False
+  use_programs: False
+  num_tempos: 32  # Number of tempo bins
+  tempo_range: (40, 250)  # Range of tempos (min, max)
+  data_type: "Performance"
+  remove_outliers: True,
+  durdev: False
+
+# Optional processing flags
+alignment: True
+score: False
+transcribe: False
+split: True
+padding: True
+compact: False
+
+# Other configurations
+styles: 6  # Number of classes for classification tasks
+
+output_features: ["Velocity", "IOI", "Duration"]  
+
+stage: "train"

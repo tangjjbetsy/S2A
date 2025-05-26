@@ -216,14 +216,12 @@ class S2PLitModule(LightningModule):
 
         y_s = list()
 
-        for i in range(6):
-            pid = torch.ones_like(style) * i
-            y_ = self.forward(x, mask, pid)
-            y_[0] = sampling.sampling(y_[0], t=1)
-            y_[1] = sampling.sampling(y_[1], t=1)
-            y_[2] = sampling.sampling(y_[2], t=1)
+        y_ = self.forward(x, mask, style)
+        y_[0] = sampling.sampling(y_[0], t=1)
+        y_[1] = sampling.sampling(y_[1], t=1)
+        y_[2] = sampling.sampling(y_[2], t=1)
 
-            y_s.append(y_)
+        y_s.append(y_)
 
         # for i in range(len(y_)):
         #     y_[i] = torch.argmax(y_[i], dim=-1)

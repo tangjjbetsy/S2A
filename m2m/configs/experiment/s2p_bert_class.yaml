@@ -23,10 +23,10 @@ trainer:
   min_epochs: 10
   max_epochs: 2000
   accelerator: gpu
-  devices: 2
+  devices: 1
   num_nodes: 1
-  strategy: ddp_find_unused_parameters_true
-  sync_batchnorm: True
+  # strategy: ddp_find_unused_parameters_true
+  # sync_batchnorm: True
 
 model:
   warm_up_step: 40

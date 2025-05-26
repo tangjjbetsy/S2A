@@ -12,8 +12,6 @@ This is the M2M model implemented with the [lightning-hydra-template](https://gi
 
 ## Installation
 
-#### Conda
-
 ```bash
 # create conda environment and install dependencies
 conda env create -f environment.yaml
@@ -22,9 +20,19 @@ conda env create -f environment.yaml
 conda activate m2m
 ```
 
-## How to run
+## Dataset & Checkpoints
+1. Please download the ATEPP-s2a (midi & aligned data) from [here]().
+2. Checkpoints could be downloaded from [here]().
 
+## Running
 Please refer to [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) for more details on how to use this repo. This repo strictly follows the template design.
+
+Working Directory: `m2m/`
+
+### Data Preparation
+```bash
+./scripts/data.sh
+```
 
 ### Training
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
@@ -38,21 +46,50 @@ You can override any parameter from command line like this
 python src/train.py trainer.max_epochs=20 data.batch_size=64
 ```
 
-Checkpoints could be downloaded from [here](https://drive.google.com/drive/folders/17lqEafXRI_mCUVnzjeq70NVqXD5VYTZI?usp=share_link).
-
 ### Evaluation
 
-Evaluate the model with the test set. Inferenced midis will be saved in the `logs/${EXP_DIR}/runs/${RUN_NAME}/predictions`.
+Evaluate the model with the test set with the checkpoint `logs/s2p_bert_class/2024-05-22_02-26-21/checkpoints/epoch_1515.ckpt` or any other checkpoint you have trained.
 
 ```bash
 # Please configure the evaluation in configs/eval.yaml
 python src/eval.py ckpt_path = PATH_TO_SAVED_MODEL
 ```
 
-### Inference
+The script will provided the matrix results in the following format:
+```bash
+----------Performance-Wise Evaluation Results----------
 
-To be provided soon as a ColabNotebook.
+---------vel----------
+corr: mean → 0.8301, h → 0.0170
+dtwd: mean → 4.2634, h → 0.1149
+kld: mean → 0.0179, h → 0.0013
 
-<!-- ### Scripts
+---------ioi----------
+corr: mean → 0.9906, h → 0.0029
+dtwd: mean → 7.5996, h → 0.6357
+kld: mean → 0.0003, h → 0.0001
 
-The `data.sh` was created for preparing the dataset. `run.sh` was used to train the model on slurm. -->
+---------dur----------
+corr: mean → 0.7549, h → 0.0171
+dtwd: mean → 29.2187, h → 3.6145
+kld: mean → 0.1895, h → 0.0099
+
+----------Segment-Wise Evaluation Results----------
+
+---------vel----------
+corr: mean → 0.6654, h → 0.0106
+dtwd: mean → 4.4432, h → 0.0363
+kld: mean → 0.0170, h → 0.0004
+
+---------ioi----------
+corr: mean → 0.9346, h → 0.0062
+dtwd: mean → 7.9537, h → 0.2493
+kld: mean → 0.0003, h → 0.0000
+
+---------dur----------
+corr: mean → 0.6654, h → 0.0117
+dtwd: mean → 30.5040, h → 1.2898
+kld: mean → 0.1813, h → 0.0031
+```
+
+The corresponding predicted midis will be saved to the `logs/s2p_bert_class_evaluate/runs/${RUN_NAME}/predictions` folder, and the score midis will be saved in `logs/s2p_bert_class_evaluate/runs/${RUN_NAME}/scores`.
