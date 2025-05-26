@@ -22,6 +22,9 @@ Jingjing Tang: `jingjing.tang@qmul.ac.uk`
 ## License
 The code is licensed under Apache License Version 2.0, following ESPnet. The pretrained model is licensed under the Creative Commons License: Attribution 4.0 International http://creativecommons.org/licenses/by/4.0/legalcode
 
+## Acknowledgements
+This work is supported by both the UKRI Centre for Doctoral Training in Artificial Intelligence and Music (grant number EP/S022694/1), and the National Institute of Informatics in Japan. J.Tang is a research student supported jointly by the China Scholarship Council [grant number 202008440382] and Queen Mary University of London. E. Cooper conducted this work while at NII, Japan and is currently employed by NICT, Japan.
+
 ## Reference
 ```
 @INPROCEEDINGS{10890623,

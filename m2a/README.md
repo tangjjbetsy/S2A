@@ -3,19 +3,21 @@
 
 ## Installation
 
-1. Manually create conda enviroment:
+1. Create conda enviroment:
 
 ```bash
-conda create -p YOUR_DIR/.conda/envs/midi2wav python=3.9 -y
-conda activate YOUR_DIR/.conda/envs/midi2wav
+conda create -n midi2wav python=3.9 -y
+conda activate midi2wav
 ```
 
 2. You don't have to set up kaldi for this
 
 3. Install ESPnet
-```bath
+`wget` is required for this step, please install it if you don't have it.
+
+```bash
 $ cd <midi2wav-root>/tools
-$ make TH_VERSION=1.8 CUDA_VERSION=11.1
+$ make TH_VERSION=1.10.1 CUDA_VERSION=11.3
 ```
 Make sure the espnet version is `espnet==0.10` and `matplotlib` needs to be installed separately depending on the operation system.
 
