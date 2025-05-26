@@ -1,8 +1,8 @@
 
 # Midi-to-Audio Model
+The current implementation supports CUDA only, and cannot be run on CPU.
 
 ## Installation
-
 1. Create conda enviroment:
 
 ```bash
@@ -17,7 +17,7 @@ conda activate midi2wav
 
 ```bash
 $ cd <midi2wav-root>/tools
-$ make TH_VERSION=1.10.1 CUDA_VERSION=11.3
+$ make TH_VERSION=1.8 CUDA_VERSION=11.1
 ```
 Make sure the espnet version is `espnet==0.10` and `matplotlib` needs to be installed separately depending on the operation system.
 
