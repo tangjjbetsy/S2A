@@ -51,7 +51,8 @@ Evaluate the model with the test set with the checkpoint `logs/s2p_bert_class/20
 
 ```bash
 # Please configure the evaluation in configs/eval.yaml
-python src/eval.py ckpt_path = PATH_TO_SAVED_MODEL
+CHECKPOINT=logs/s2p_bert_class/2024-05-22_02-26-21/checkpoints/epoch_1515.ckpt
+python src/eval.py ckpt_path=$CHECKPOINT
 ```
 
 The script will provided the matrix results in the following format:

@@ -26,7 +26,7 @@ $ make TH_VERSION=1.10.1 CUDA_VERSION=11.3 # Please select the versions that fit
 ```
 Make sure the espnet version is `espnet==0.10`. 
 
-1. Extra dependencies:
+4. Extra dependencies:
 ```bash
 pretty_midi==0.2.10
 wandb==0.12.9
@@ -38,25 +38,25 @@ librosa==0.10.1
 
 
 ## Training & Evaluation
+
+### Prepare
 1. Working Dictionary: `egs2/maestro/tts1/`
 ```bash
 cd <midi2wav-root>/egs2/maestro/tts1/
 ```
 2. Please [download](https://zenodo.org/records/15524693/files/m2a.zip) all the checkpoints for `m2a` and save them under `exp/` folder.
 
-### Prepare
+3. Download `train.loss.ave.pth` checkpoint pre-trained by the original [M2A](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) implementation from [Zenodo](https://zenodo.org/records/7439325#.Y5pcAi8Rr0o) and save it under `exp/tts_finetune_joint_transformer_hifigan_raw_proll/` folder.
 
-1. Download `train.loss.ave.pth` checkpoint pre-trained by the original [M2A](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) implementation from [Zenodo](https://zenodo.org/records/7439325#.Y5pcAi8Rr0o) and save it under `exp/tts_finetune_joint_transformer_hifigan_raw_proll/` folder.
+4.  To dowload the training datasets, please leave you email or contact `jingjing.tang@qmul.ac.uk` for the access.
 
-2.  To dowload the training datasets, please leave you email or contact `jingjing.tang@qmul.ac.uk` for the access.
-
-3. Use the 
+5. Use the 
 `conf/tuning/finetune_joint_transformer_hifigan_atepp.yaml` as the configuration to finetune the model. You could specify the pre-trained model path with `init_param` in the configuration file, currently set to `exp/tts_finetune_joint_transformer_hifigan_raw_proll/train.loss.ave.pth`.
 
 ### Run
 ```bash
 # 1. Prepare the data segments
-./local/data.sh --mode train --path_to_data PATH_TO_DATA
+./local/data.sh --mode train --path_to_data DATA_DIR
 # or
 ./local_score/data.sh # For training the baseline model
 
