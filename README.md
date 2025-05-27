@@ -21,7 +21,7 @@ by Jingjing Tang, Erica Cooper, Xin Wang, Junichi Yamagishi, and György Fazekas
 
 Please refer to the `README.md` files inside each subdirectory (`m2a/` and `m2m/`) for detailed instructions on inference and generation of target MIDI or audio outputs.
 
-As for reproducting objective evaluation results of the m2a model, please refer to the `m2a_objective_eval/README.md` file. For the m2m model, the matrix could be reproduced by running the evaluation script in the `m2m/` directory.
+As for reproducting objective evaluation results of the m2a model, please refer to the `objective_eval/README.md` file. For the m2m model, the matrix could be reproduced by running the evaluation script in the `m2m/` directory.
 
 ## Dataset & Checkpoints
 The dataset for training the `m2m` model and all the checkpoints could be downloaded from [Zenodo](https://zenodo.org/records/15524693). For the dataset used to finetune the `m2a` model, please contact the authors directly.
