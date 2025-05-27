@@ -21,8 +21,7 @@ conda activate m2m
 ```
 
 ## Dataset & Checkpoints
-1. Please download the ATEPP-s2a (midi & aligned data) from [here]().
-2. Checkpoints could be downloaded from [here]().
+Please download the [ATEPP-s2a](https://zenodo.org/records/15524693/files/ATEPP-s2a.zip) (midi files & aligned data) dataset and [checkpoints](https://zenodo.org/records/15524693/files/m2m.zip).
 
 ## Running
 Please refer to [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) for more details on how to use this repo. This repo strictly follows the template design.

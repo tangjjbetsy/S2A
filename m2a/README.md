@@ -42,8 +42,7 @@ librosa==0.10.1
 ```bash
 cd <midi2wav-root>/egs2/maestro/tts1/
 ```
-2. Checkpoints
-Please [download](https://drive.google.com/drive/folders/17lqEafXRI_mCUVnzjeq70NVqXD5VYTZI?usp=share_link) all the checkpoints for `m2a` and save them under `exp/` folder.
+2. Please [download](https://zenodo.org/records/15524693/files/m2a.zip) all the checkpoints for `m2a` and save them under `exp/` folder.
 
 ### Prepare
 
