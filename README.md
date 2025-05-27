@@ -1,5 +1,10 @@
-# Score-to-Audio
-This repository contains the official implementation of our ICASSP 2025 [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10890623), **"Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores."** by Jingjing Tang, Erica Cooper, Xin Wang, Junichi Yamagishi, and György Fazekas.
+# Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores
+
+This repository contains the official implementation of our ICASSP 2025 [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10890623)
+
+**"Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores"**
+
+by Jingjing Tang, Erica Cooper, Xin Wang, Junichi Yamagishi, and György Fazekas.
 
 ## Project Structure
 
@@ -8,6 +13,9 @@ This repository contains the official implementation of our ICASSP 2025 [paper](
 
 - **`m2m/`**  
   Includes the expressive performance rendering model, designed to generate expressive performance MIDI files from symbolic music scores.
+
+- **`objective_eval/`**
+  Scripts to run objective evaluation of synthesised MIDI Performances
 
 ## How to Use
 
