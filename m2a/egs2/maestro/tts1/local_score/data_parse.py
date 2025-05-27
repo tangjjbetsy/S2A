@@ -77,7 +77,7 @@ def main(db_root, maestro_root):
         """
 
 def main_score(db_root, tgt_root, use_sid=False, use_lid=False, use_perf=False):
-    f_csv_dir = os.path.join(db_root, 'ATEPP-s2a/ATEPP-s2a.csv')
+    f_csv_dir = os.path.join(db_root, 'ATEPP-s2a.csv')
     df_dataset = pd.read_csv(f_csv_dir)
     dataset = defaultdict(dict)
     uttid_list = []

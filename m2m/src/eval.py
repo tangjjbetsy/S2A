@@ -12,7 +12,10 @@ import torch
 from lightning import LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
-
+from scipy.special import rel_entr
+import scipy.stats
+from dtw import *
+from tqdm import tqdm
 from data.components.expression_tokenizer import ExpressionTok
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -51,6 +54,32 @@ PERFROMER = [
 ]
 
 log = RankedLogger(__name__, rank_zero_only=True)
+
+
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
+    return m, h
+
+# Ensure the distributions sum to 1
+def calculate_kld(p, q):
+    p = p / np.sum(p)
+    q = q / np.sum(q)
+    # Calculate the KL divergence from P to Q
+    kl_divergence = np.sum(rel_entr(p, q))
+    return kl_divergence
+
+def calculate_corr(p, q):
+    seq_l = min(len(p), len(q))
+    correlation_matrix = np.corrcoef(p[0:seq_l], q[0:seq_l])
+    correlation_coefficient = correlation_matrix[0, 1]
+    return correlation_coefficient
+
+def calculate_dwt(p,q):
+    alignment = dtw(p, q, keep_internals=True)
+    return alignment.distance / len(q)
 
 
 def clip_feature(tokens, bounds):
@@ -148,59 +177,104 @@ def get_indexes_for_same_perf(predictions):
 
 def reconstruct_midi(predictions, cfg, tokenizer):
     indexes = get_indexes_for_same_perf(predictions)
-    for key, value in indexes.items():
+    evals = {
+            "key":[],
+            "vel":[],
+            "ioi":[],
+            "dur":[]
+        }
+
+    evals_seg = {
+            "key":[],
+            "vel":[],
+            "ioi":[],
+            "dur":[]
+        }
+    
+    for key, value in tqdm(indexes.items()):
+        # if key not in ["06385"]:
+        #     continue
+        evals['key'].append(key)
+        evals_seg['key'].append(key)
+        
         value_keys = list(sorted(value.keys(), key=lambda x: int(x.split("_")[1])))
         tokens = []
-        for k in range(6):
-            for i in range(len(value_keys)):
-                perf = predictions[value[value_keys[i]][0]][0][k]
-                perf = torch.stack(perf, dim=2).squeeze()[value[value_keys[i]][1]]
-                score = predictions[value[value_keys[i]][0]][1][value[value_keys[i]][1]]
-                mask = predictions[value[value_keys[i]][0]][2][value[value_keys[i]][1]]
-                gt = predictions[value[value_keys[i]][0]][3][value[value_keys[i]][1]]
-                org_style = predictions[value[value_keys[i]][0]][4][value[value_keys[i]][1]]
-                style = k
-                perf = mask.unsqueeze(-1).repeat(1, 3) * perf
+        gt_tokens = []
+        index_pair = {'vel':(0,1), 
+                    'ioi':(1,3), 
+                    'dur':(2,2)} #Vel, IOI, Dur
+        
+        for i in range(len(value_keys)):
+            perf = predictions[value[value_keys[i]][0]][0][0]
+            perf = torch.stack(perf, dim=2).squeeze()[value[value_keys[i]][1]]
+            score = predictions[value[value_keys[i]][0]][1][value[value_keys[i]][1]]
+            mask = predictions[value[value_keys[i]][0]][2][value[value_keys[i]][1]]
+            gt = predictions[value[value_keys[i]][0]][3][value[value_keys[i]][1]]
+            style = predictions[value[value_keys[i]][0]][4][value[value_keys[i]][1]]
+            perf = mask.unsqueeze(-1).repeat(1, 3) * perf
 
-                for j in range(len(cfg.data.output_features)):
-                    bounds = cfg.model.net.bert.feature_boundaries[cfg.data.output_features[j]]
-                    perf[:, [j]] = clip_feature(perf[:, [j]], bounds)
+            for j in range(len(cfg.data.output_features)):
+                bounds = cfg.model.net.bert.feature_boundaries[cfg.data.output_features[j]]
+                perf[:, [j]] = clip_feature(perf[:, [j]], bounds)
 
-                alignment_tokens = (
-                    torch.cat(
-                        [
-                            score[:, [0]],  # Pitch
-                            perf[:, [0]],  # PVel
-                            perf[:, [2]],  # PDur
-                            perf[:, [1]],  # PIOI
-                            score[:, [4, 5]],  # Fake-PPos, Bar
-                            score[:, 1:],
-                        ],  # Score
-                        dim=-1,
-                    )
-                    .int()
-                    .tolist()
+            alignment_tokens = (
+                torch.cat(
+                    [
+                        score[:, [0]],  # Pitch
+                        perf[:, [0]],  # PVel
+                        perf[:, [2]],  # PDur
+                        perf[:, [1]],  # PIOI
+                        score[:, [4, 5]],  # Fake-PPos, Bar
+                        score[:, 1:],
+                    ],  # Score
+                    dim=-1,
                 )
-
-                # visulization(perf, gt, style, cfg.paths.output_dir, f"{value_keys[i]}_{org_style}")
-
-                if i == 0:
-                    tokens = alignment_tokens
-                else:
-                    tokens += alignment_tokens
-
-            if os.path.isdir(cfg.paths.output_dir + "/predictions/") is False:
-                os.makedirs(cfg.paths.output_dir + "/predictions/")
-            if os.path.isdir(cfg.paths.output_dir + "/scores/") is False:
-                os.makedirs(cfg.paths.output_dir + "/scores/")
-
-            tokenizer.align_tokens_to_midi(
-                [tokens],
-                cfg.paths.output_dir + "/predictions/" + key + f"_{org_style}_{style}.mid",
-                cfg.paths.output_dir + "/scores/" + key + ".mid",
-                from_predictions=True,
+                .int()
+                .tolist()
             )
+                            
+            gt = gt.int().tolist()
 
+            # visulization(perf, gt, style, cfg.paths.output_dir, f"{value_keys[i]}_{org_style}")
+
+            if i == 0:
+                tokens = alignment_tokens
+                gt_tokens = gt
+            else:
+                tokens += alignment_tokens
+                gt_tokens += gt
+            
+            feats = ['vel', 'ioi', 'dur']
+            for feat in feats:
+                corr = calculate_corr(np.array(gt)[:, index_pair[feat][0]], np.array(alignment_tokens)[:, index_pair[feat][1]])
+                dtwd = calculate_dwt(np.array(gt_tokens)[:, index_pair[feat][0]], np.array(tokens)[:, index_pair[feat][1]])
+                kld = calculate_kld(np.array(gt_tokens)[:, index_pair[feat][0]], np.array(tokens)[:, index_pair[feat][1]])
+                evals_seg[feat].append([corr, dtwd, kld])
+
+
+        tokens = np.array(tokens)
+        gt_tokens = np.array(gt_tokens)
+            
+        feats = ['vel', 'ioi', 'dur']
+        for feat in feats:
+            corr = calculate_corr(gt_tokens[:, index_pair[feat][0]], tokens[:, index_pair[feat][1]])
+            dtwd = calculate_dwt(gt_tokens[:, index_pair[feat][0]], tokens[:, index_pair[feat][1]])
+            kld = calculate_kld(gt_tokens[:, index_pair[feat][0]], tokens[:, index_pair[feat][1]])
+            evals[feat].append([corr, dtwd, kld])
+
+        if os.path.isdir(cfg.paths.output_dir + "/predictions/") is False:
+            os.makedirs(cfg.paths.output_dir + "/predictions/")
+        if os.path.isdir(cfg.paths.output_dir + "/scores/") is False:
+            os.makedirs(cfg.paths.output_dir + "/scores/")
+
+        tokenizer.align_tokens_to_midi(
+            [tokens],
+            cfg.paths.output_dir + "/predictions/" + key + f"_{style}.mid",
+            cfg.paths.output_dir + "/scores/" + key + ".mid",
+            from_predictions=True,
+        )
+            
+    return evals, evals_seg
 
 @task_wrapper
 def evaluate(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
@@ -245,12 +319,38 @@ def evaluate(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     tokenizer = ExpressionTok(params=Path(cfg.tokenizer_path))
 
     log.info("Starting evaluating!")
-    model_state_dict = torch.load(cfg.ckpt_path)
-    model.load_state_dict(model_state_dict["state_dict"], strict=False)
+    predictions = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
     
-    predictions = trainer.predict(model=model, datamodule=datamodule)
-    torch.save(predictions, cfg.paths.output_dir + "/predictions.pt")
-    reconstruct_midi(predictions, cfg, tokenizer)
+    # torch.save(predictions, cfg.paths.output_dir + "/predictions.pt")
+    # predictions = torch.load("logs/s2p_bert_class_evaluate/runs/2025-05-26_20-00-10/predictions.pt")
+    
+    evals, evals_seg = reconstruct_midi(predictions, cfg, tokenizer)
+
+    print("----------Performance-Wise Evaluation Results----------\n")
+    for feat in ['vel', 'ioi', 'dur']:
+        matrix = np.array(evals[feat])
+        corr = mean_confidence_interval(matrix[:, 0])
+        dtwd = mean_confidence_interval(matrix[:, 1])
+        kld = mean_confidence_interval(matrix[:, 2])
+        
+        print(f"---------{feat}----------\n")
+        print(f"corr: mean -> {corr[0]:.4f}, h -> {corr[1]:.4f}")
+        print(f"dtwd: mean -> {dtwd[0]:.4f}, h -> {dtwd[1]:.4f}")
+        print(f"kld: mean -> {kld[0]:.4f}, h -> {kld[1]:.4f}")
+    
+    print("----------Segment-Wise Evaluation Results----------\n")
+    for feat in ['vel', 'ioi', 'dur']:
+        matrix = np.array(evals_seg[feat])
+        corr = mean_confidence_interval(matrix[:, 0])
+        dtwd = mean_confidence_interval(matrix[:, 1])
+        kld = mean_confidence_interval(matrix[:, 2])
+        
+        print(f"---------{feat}----------\n")
+        print(f"corr: mean -> {corr[0]}, h -> {corr[1]}")
+        print(f"dtwd: mean -> {dtwd[0]}, h -> {dtwd[1]}")
+        print(f"kld: mean -> {kld[0]}, h -> {kld[1]}")
+    
+    
     metric_dict = trainer.callback_metrics
 
     return metric_dict, object_dict

@@ -268,7 +268,7 @@ class GANMTATask(AbsTask):
         else:
             # Inference mode
             # retval = ("midi") # NOTE(Xuan): I think it should be this. (Adding lids by Jingjing)
-            retval = ("midi", "audio")
+            retval = ("midi", )
         return retval
 
     @classmethod

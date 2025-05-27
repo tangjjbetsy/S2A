@@ -1,0 +1,10 @@
+{
+    "exp_sys":[
+        "baseline",
+        "m2a_ft",
+        "groundtruth",
+        "m2m_m2a",
+        "m2m_pianoteq"
+    ],
+    "data_dir": "evaluation/"
+}

@@ -1,5 +1,10 @@
-# Score-to-Audio
-This repository contains the official implementation of our ICASSP 2025 [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10890623), **"Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores."**
+# Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores
+
+This repository contains the official implementation of our ICASSP 2025 [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10890623)
+
+**"Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores"**
+
+by Jingjing Tang, Erica Cooper, Xin Wang, Junichi Yamagishi, and György Fazekas.
 
 ## Project Structure
 
@@ -9,9 +14,17 @@ This repository contains the official implementation of our ICASSP 2025 [paper](
 - **`m2m/`**  
   Includes the expressive performance rendering model, designed to generate expressive performance MIDI files from symbolic music scores.
 
+- **`objective_eval/`**
+  Scripts to run objective evaluation of synthesised MIDI Performances
+
 ## How to Use
 
 Please refer to the `README.md` files inside each subdirectory (`m2a/` and `m2m/`) for detailed instructions on inference and generation of target MIDI or audio outputs.
+
+As for reproducting objective evaluation results of the m2a model, please refer to the `m2a_objective_eval/README.md` file. For the m2m model, the matrix could be reproduced by running the evaluation script in the `m2m/` directory.
+
+## Dataset & Checkpoints
+The dataset for training the `m2m` model and all the checkpoints could be downloaded from [Zenodo](https://zenodo.org/records/15524693). For the dataset used to finetune the `m2a` model, please contact the authors directly.
 
 ## Demo
 You can listen to the demo samples on our [project page](https://tangjjbetsy.github.io/S2A/).
@@ -21,6 +34,9 @@ Jingjing Tang: `jingjing.tang@qmul.ac.uk`
 
 ## License
 The code is licensed under Apache License Version 2.0, following ESPnet. The pretrained model is licensed under the Creative Commons License: Attribution 4.0 International http://creativecommons.org/licenses/by/4.0/legalcode
+
+## Acknowledgements
+This work is supported by both the UKRI Centre for Doctoral Training in Artificial Intelligence and Music (grant number EP/S022694/1), and the National Institute of Informatics in Japan. J.Tang is a research student supported jointly by the China Scholarship Council [grant number 202008440382] and Queen Mary University of London. E. Cooper conducted this work while at NII, Japan and is currently employed by NICT, Japan.
 
 ## Reference
 ```

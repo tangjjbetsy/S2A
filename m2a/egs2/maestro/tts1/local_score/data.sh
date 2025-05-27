@@ -33,10 +33,10 @@ fi
 # maestro_root="${ROOT}/../${tgt_folder}/maestro/Google_maestro-v2.0.0"
 # maestro_root="${MAESTRO}/maestro/MIDI-filterbank"
 db_root="/home/smg/v-jtbetsy/DATA"
-tgt_folder="data_perf"
+tgt_folder="data_score"
 use_sid=True
 use_lid=True
-use_perf=True
+use_perf=False
 
 train_set="train"
 valid_set="validation"

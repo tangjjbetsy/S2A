@@ -18,7 +18,7 @@ output_dir: ${hydra:runtime.output_dir}
 work_dir: ${hydra:runtime.cwd}
 
 # custom_paths
-database_dir: "/home/smg/v-jtbetsy/DATA/"
+database_dir: "/Volumes/T7/backup/NII/Backup/DATA/"
 performance_dir: ${paths.database_dir}/ATEPP-s2a/
 score_dir: null
-csv_path: ${paths.database_dir}/ATEPP-s2a/ATEPP-s2a.csv
+csv_path: ${paths.data_dir}/ATEPP-s2a.csv
