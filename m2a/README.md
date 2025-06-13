@@ -33,6 +33,7 @@ wandb==0.12.9
 protobuf==3.19.3
 pandas==2.2.1
 librosa==0.10.1
+typeguard==2.13.3
 ```
 *Please refer to the [MIDI-to-Audio repo](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) instructions for more details about installation.*
 
@@ -84,7 +85,7 @@ Prepare the midis that you would like to synthesize under a folder, e.g., `PATH_
 ./local/data.sh --mode "inference" --inference_path PATH_TO_MIDI_FOLDER
 
 # 2. Process the data for inference
-./run.sh --stage 2 --stop_stage 3 --ngpu 1 --tts_task gan_mta
+./run.sh --stage 2 --stop_stage 2 --ngpu 1 --tts_task gan_mta
 
 # 3. Create a `feats_type` file under `dump/raw/test` by
 mkdir -p dump/raw/test

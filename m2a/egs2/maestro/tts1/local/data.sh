@@ -65,35 +65,59 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     # make segments (wav_segments.scp, wav_segments, text_segments.scp, text_segments)
     # wav_segments.scp (eg: segid data/{train/val/text}/wav_segments/{segid}.wav)
     # text_segments.scp (eg: segid data/{train/val/text}/text_segments/{segid}.npz)
-
-    for dset in "${train_set}" "${valid_set}" ${test_sets}; do
-        python local/data_segments.py ${mode} --wav_dir data/"${dset}"/wav.scp \
-            --wav_segments_dir data/"${dset}"/wav_segments \
-            --text_dir data/"${dset}"/text \
-            --text_segments_dir data/"${dset}"/text_segments \
-            --sample_rate ${sample_rate} \
-            --num_segment_frame ${num_segment_frame}
-    done
+    if [ ${mode} != "inference" ]; then
+        for dset in "${train_set}" "${valid_set}" ${test_sets}; do
+            python local/data_segments.py main --wav_dir data/"${dset}"/wav.scp \
+                --wav_segments_dir data/"${dset}"/wav_segments \
+                --text_dir data/"${dset}"/text \
+                --text_segments_dir data/"${dset}"/text_segments \
+                --sample_rate ${sample_rate} \
+                --num_segment_frame ${num_segment_frame}
+        done
+    else
+        for dset in ${test_sets}; do
+            python local/data_segments.py inference \
+                --text_dir data/"${dset}"/text \
+                --text_segments_dir data/"${dset}"/text_segments \
+                --sample_rate ${sample_rate} \
+                --num_segment_frame ${num_segment_frame}
+        done
+    fi
 
 fi
 
 if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     log "stage 2: Generate utt2spk & spk2utt"
     # make utt2spk & spk2utt
-    for dset in "${train_set}" "${valid_set}" ${test_sets}; do
-        utt2spk=data/"${dset}"/utt2spk
-        spk2utt=data/"${dset}"/spk2utt
-        [ -e ${utt2spk} ] && rm ${utt2spk}
-        [ -e ${spk2utt} ] && rm ${spk2utt}
+    if [ ${mode} != "inference" ]; then
+        for dset in "${train_set}" "${valid_set}" ${test_sets}; do
+            utt2spk=data/"${dset}"/utt2spk
+            spk2utt=data/"${dset}"/spk2utt
+            [ -e ${utt2spk} ] && rm ${utt2spk}
+            [ -e ${spk2utt} ] && rm ${spk2utt}
+            
+            mv data/"${dset}"/wav.scp data/"${dset}"/wav_original.scp
+            mv data/"${dset}"/wav_segments.scp data/"${dset}"/wav.scp
+            mv data/"${dset}"/text data/"${dset}"/text_original
+            mv data/"${dset}"/text_segments.scp data/"${dset}"/text
 
-        mv data/"${dset}"/wav.scp data/"${dset}"/wav_original.scp
-        mv data/"${dset}"/text data/"${dset}"/text_original
-        mv data/"${dset}"/wav_segments.scp data/"${dset}"/wav.scp
-        mv data/"${dset}"/text_segments.scp data/"${dset}"/text
+            python local/generate_utt2spk.py data/"${dset}"/wav.scp data/"${dset}"/utt2spk
+            utils/utt2spk_to_spk2utt.pl ${utt2spk} > ${spk2utt}
+        done
+    else
+        for dset in ${test_sets}; do
+            utt2spk=data/"${dset}"/utt2spk
+            spk2utt=data/"${dset}"/spk2utt
+            [ -e ${utt2spk} ] && rm ${utt2spk}
+            [ -e ${spk2utt} ] && rm ${spk2utt}
 
-        python local/generate_utt2spk.py data/"${dset}"/wav.scp data/"${dset}"/utt2spk
-        utils/utt2spk_to_spk2utt.pl ${utt2spk} > ${spk2utt}
-    done
+            mv data/"${dset}"/text data/"${dset}"/text_original
+            mv data/"${dset}"/text_segments.scp data/"${dset}"/text
+
+            python local/generate_utt2spk.py data/"${dset}"/text data/"${dset}"/utt2spk
+            utils/utt2spk_to_spk2utt.pl ${utt2spk} > ${spk2utt}
+        done
+    fi
 fi
 
 

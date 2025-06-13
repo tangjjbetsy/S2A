@@ -328,12 +328,18 @@ if ! "${skip_data_prep}"; then
         # i.e. the input file format and rate is same as the output.
 
         log "Stage 2: Format wav.scp: ${datadir}/ -> ${data_feats}/"
-        for dset in ${test_sets}; do
+        for dset in "${train_set}" "${valid_set}" ${test_sets}; do
             if [ "${dset}" = "${train_set}" ] || [ "${dset}" = "${valid_set}" ]; then
                 _suf="/org"
             else
                 _suf=""
             fi
+            # if the folder exists, run the following commands
+            if [ ! -d "${datadir}/${dset}" ]; then
+                log "Skip ${datadir}/${dset} as it does not exist."
+                continue
+            fi
+            
             utils/copy_data_dir.sh ${datadir}/"${dset}" "${data_feats}${_suf}/${dset}"
             rm -f ${data_feats}${_suf}/${dset}/{segments,wav.scp,reco2file_and_channel}
             _opts=

@@ -94,7 +94,7 @@ def segment_midi_func(midi_wav_args_zip):
         raise ValueError('cannot load midifile from {}'.format(midi_dir))
     if len(mid_ob.instruments) > 1:
         print("Track has >1 instrument %s" % (midi_dir))
-    midi = mid_ob.get_piano_roll(fs=args.sample_rate/up_sample_rate)
+    midi = mid_ob.get_piano_roll(fs=args.sample_rate/up_sample_rate) 
     utt_id_list = []
     print('split uttid: {}'.format(midi_id))
     i = 0
@@ -115,28 +115,7 @@ def segment_midi_func(midi_wav_args_zip):
         i += 1
     return utt_id_list
 
-def main():
-    # parser
-    parser = argparse.ArgumentParser(description='generate segments')
-    parser.add_argument('--wav_dir', type=str, default='',
-                        help='directory of wav.scp')
-    parser.add_argument('--wav_segments_dir', type=str, default='',
-                        help='directory of segments for wav')
-    parser.add_argument('--text_dir', type=str, default='',
-                        help='directory of text (directory of midi)')
-    parser.add_argument('--text_segments_dir', type=str, default='',
-                        help='directory of segments for text')
-    parser.add_argument('--sample_rate', type=int, default=24000,
-                        help='number of sample rate')
-    parser.add_argument('--num_segment_frame', type=float, default=800,
-                        help='number of frames in each segment')
-    parser.add_argument('--begin_cut', type=float, default=2,
-                        help='the beginning of the frame')
-    parser.add_argument('--end_cut', type=float, default=2,
-                        help='the end of the frame')
-    
-    args = parser.parse_args()
-    
+def main(args):
     f_wav = open(args.wav_dir, 'r')
     lines_wav = f_wav.readlines()
 
@@ -178,24 +157,7 @@ def main():
     f_wav_segments.close()
     f_midi_segments.close()
     
-def main_inference():
-    # parser
-    parser = argparse.ArgumentParser(description='generate segments')
-    parser.add_argument('--text_dir', type=str, default='',
-                        help='directory of text (directory of midi)')
-    parser.add_argument('--text_segments_dir', type=str, default='',
-                        help='directory of segments for text')
-    parser.add_argument('--sample_rate', type=int, default=24000,
-                        help='number of sample rate')
-    parser.add_argument('--num_segment_frame', type=float, default=800,
-                        help='number of frames in each segment')
-    parser.add_argument('--begin_cut', type=float, default=2,
-                        help='the beginning of the frame')
-    parser.add_argument('--end_cut', type=float, default=2,
-                        help='the end of the frame')
-
-    args = parser.parse_args()
-
+def main_inference(args):
     f_midi = open(args.text_dir, 'r')
     lines_midi = f_midi.readlines()
 
@@ -223,11 +185,46 @@ def main_inference():
     for midi_seg in midi_segments_list:
         f_midi_segments.write(midi_seg)
     f_midi_segments.close()
-
-
+    
 if __name__ == "__main__":
-    mode = sys.argv[1]
-    if sys.argv[1] == 'inference':
-        main_inference()
+    parser = argparse.ArgumentParser(description='generate segments')
+    subparsers = parser.add_subparsers(dest='mode')
+    
+    parser_inference = subparsers.add_parser('inference')
+    parser_inference.add_argument('--text_dir', type=str, default='',
+                        help='directory of text (directory of hackkey)')
+    parser_inference.add_argument('--text_segments_dir', type=str, default='',
+                        help='directory of segments for text')
+    parser_inference.add_argument('--sample_rate', type=int, default=24000,
+                        help='number of sample rate')
+    parser_inference.add_argument('--num_segment_frame', type=float, default=800,
+                        help='number of frames in each segment')
+    parser_inference.add_argument('--begin_cut', type=float, default=2,
+                        help='the beginning of the frame')
+    parser_inference.add_argument('--end_cut', type=float, default=2,
+                        help='the end of the frame')
+
+    parser_main = subparsers.add_parser('main')
+    parser_main.add_argument('--text_dir', type=str, default='',
+                        help='directory of text (directory of hackkey)')
+    parser_main.add_argument('--text_segments_dir', type=str, default='',
+                        help='directory of segments for text')
+    parser_main.add_argument('--wav_dir', type=str, default='',
+                        help='directory of wav.scp')
+    parser_main.add_argument('--wav_segments_dir', type=str, default='',
+                        help='directory of segments for wav')
+    parser_main.add_argument('--sample_rate', type=int, default=24000,
+                        help='number of sample rate')
+    parser_main.add_argument('--num_segment_frame', type=float, default=800,
+                        help='number of frames in each segment')
+    parser_main.add_argument('--begin_cut', type=float, default=2,
+                        help='the beginning of the frame')
+    parser_main.add_argument('--end_cut', type=float, default=2,
+                        help='the end of the frame')
+
+    args = parser.parse_args()
+    
+    if args.mode == "inference":
+        main_inference(args)
     else:
-        main()
+        main(args)
