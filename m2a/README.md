@@ -34,6 +34,7 @@ protobuf==3.19.3
 pandas==2.2.1
 librosa==0.10.1
 typeguard==2.13.3
+scipy==1.10.0
 ```
 *Please refer to the [MIDI-to-Audio repo](https://github.com/nii-yamagishilab/midi-to-audio/tree/main) instructions for more details about installation.*
 
@@ -63,16 +64,16 @@ cd <midi2wav-root>/egs2/maestro/tts1/
 
 # 2. Process the data for training
 train_config=conf/tuning/finetune_joint_transformer_hifigan_atepp.yaml
-num_gpus=1 # Set the number of GPUs you want to use
+num_gpus=1 # Set the number of GPUs you want to use, set to 0 for CPU training
 inference_model=train.total_count.best.pth
 
-./run.sh --stage 2 --stop_stage 5 --train_config $train_config --ngpu $num_gpus --tts_task gan_mta
+./run.sh --stage 2 --stop_stage 5 --train_config ${train_config} --ngpu ${num_gpus} --tts_task gan_mta
 
 # 3. Train the model
-./run.sh --stage 6 --stop_stage 6 --train_config $train_config --ngpu $num_gpus --tts_task gan_mta
+./run.sh --stage 6 --stop_stage 6 --train_config ${train_config} --ngpu ${num_gpus} --tts_task gan_mta
 
 # 4. Test the model
-./run.sh --stage 7 --stop_stage 7 --train_config $train_config --inference_model $inference_model --ngpu $num_gpus --tts_task gan_mta
+./run.sh --stage 7 --stop_stage 7 --train_config ${train_config} --inference_model ${inference_model} --ngpu ${num_gpus} --tts_task gan_mta
 ```
 
 For training the baseline model, please use the `exp/tts_finetune_joint_transformer_hifigan_atepp_raw_proll/train.total_count.best.pth` as pre-trained model and use the `conf/tuning/finetune_joint_transformer_hifigan_atepp_score_with_sid_lid.yaml` as the configuration to finetune the model.
@@ -95,7 +96,7 @@ echo "'feats_type' file created with content 'raw' in dump/raw/test"
 # 4. Run inference
 train_config=conf/tuning/finetune_joint_transformer_hifigan_atepp.yaml
 inference_model=train.total_count.best.pth
-./run.sh --stage 7 --stop_stage 7 --ngpu 1 --tts_task gan_mta --inference_model $inference_model --train_config $train_config
+./run.sh --stage 7 --stop_stage 7 --ngpu 1 --tts_task gan_mta --inference_model ${inference_model} --train_config ${train_config}
 
 # 5. To concatenate the audio files, please run the the following command:
 python pyscripts/concatenate_audio.py PATH_TO_SEGMENTS

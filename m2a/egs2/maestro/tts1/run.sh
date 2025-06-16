@@ -76,6 +76,7 @@ log "$0 $*"
     --tts_task ${tts_task} \
     --gpu_inference true \
     --skip_data_prep false \
+    ${opts} "$@"
     # --tag finetune_joint_transformer_hifigan_atepp \ # midi-to-audio fine-tune
 
     ### Score-to-Audio #####
@@ -84,4 +85,4 @@ log "$0 $*"
     # --tag finetune_joint_transformer_hifigan_atepp_s2a_with_sid_lid \ # score-to-audio fine-tune \
     # --dumpdir dump_spk_lang \
     # --tts_stats_dir exp/tts_stats_sid_lid
-    ${opts} "$@"
+    

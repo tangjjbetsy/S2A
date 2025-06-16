@@ -18,7 +18,8 @@ requirements = {
         "scipy>=1.4.1",
         "matplotlib",
         "pillow>=6.1.0",
-        "editdistance==0.5.2",
+        "editdistance==0.6.2", #NOTE(Jingjing): for compatibility with Colab
+        # "editdistance==0.5.2",
         "ctc-segmentation<1.8,>=1.6.6",
         "wandb",
         "filelock",
@@ -95,7 +96,8 @@ try:
         requirements["install"].append("fairscale")
 
     if LooseVersion(torch.__version__) >= LooseVersion("1.9.1"):
-        raise NotImplementedError("Not yet supported")
+        pass
+        # raise NotImplementedError("Not yet supported")
     elif LooseVersion(torch.__version__) >= LooseVersion("1.9.0"):
         requirements["install"].append("torchaudio==0.9.0")
     elif LooseVersion(torch.__version__) >= LooseVersion("1.8.1"):
