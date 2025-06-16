@@ -1,4 +1,8 @@
 # Towards an Integrated Approach for Expressive Piano Performance Synthesis from Music Scores
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1J16U55C-uBYgMDasUC7-Ku8zirzjFVQb?usp=sharing)
+[![arXiv](https://img.shields.io/badge/arXiv-2501.10222v1-b31b1b.svg)](https://arxiv.org/abs/2501.10222v1)
+[![zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.15524693.svg)](https://doi.org/10.5281/zenodo.15524693)
+![Conference](https://img.shields.io/badge/Conference-ICASSP%202025-blue)
 
 This repository contains the official implementation of our ICASSP 2025 [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10890623)
 
@@ -22,6 +26,8 @@ by Jingjing Tang, Erica Cooper, Xin Wang, Junichi Yamagishi, and György Fazekas
 Please refer to the `README.md` files inside each subdirectory (`m2a/` and `m2m/`) for detailed instructions on inference and generation of target MIDI or audio outputs.
 
 As for reproducting objective evaluation results of the m2a model, please refer to the `objective_eval/README.md` file. For the m2m model, the matrix could be reproduced by running the evaluation script in the `m2m/` directory.
+
+We also provide a colab notebook for quick testing of both models: [Colab Notebook](https://colab.research.google.com/drive/1J16U55C-uBYgMDasUC7-Ku8zirzjFVQb?usp=sharing).
 
 ## Dataset & Checkpoints
 The dataset for training the `m2m` model and all the checkpoints could be downloaded from [Zenodo](https://zenodo.org/records/15524693). For the dataset used to finetune the `m2a` model, please contact the authors directly.

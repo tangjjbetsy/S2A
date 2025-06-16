@@ -52,7 +52,7 @@ Evaluate the model with the test set with the checkpoint `logs/s2p_bert_class/20
 ```bash
 # Please configure the evaluation in configs/eval.yaml
 CHECKPOINT=logs/s2p_bert_class/2024-05-22_02-26-21/checkpoints/epoch_1515.ckpt
-python src/eval.py ckpt_path=$CHECKPOINT
+python src/eval.py ckpt_path=${CHECKPOINT}
 ```
 
 The script will provided the matrix results in the following format:
@@ -93,3 +93,15 @@ kld: mean → 0.1813, h → 0.0031
 ```
 
 The corresponding predicted midis will be saved to the `logs/s2p_bert_class_evaluate/runs/${RUN_NAME}/predictions` folder, and the score midis will be saved in `logs/s2p_bert_class_evaluate/runs/${RUN_NAME}/scores`.
+
+### Inference
+
+```bash
+# Please configure the inference in configs/inference.yaml
+CHECKPOINT=logs/s2p_bert_class/2024-05-22_02-26-21/checkpoints/epoch_1515.ckpt
+MIDI_PATH=your_midi_file.mid
+
+# Style can be chosen from 0-5, corresponding to the styles of the pianists in the training set.
+# 0: Alfred Brendel, 1: Claudio Arrau, 2: Daniel Barenboim, 3: Friedrich Gulda, 4: Sviatoslav Richter, 5: Wilhelm Kempff
+python src/inference.py ckpt_path=${CHECKPOINT} midi_path=${MIDI_PATH} style=0
+```
