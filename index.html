@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Towards An Integrated Approach for Expressive Piano Performance Synthesis from Music Scores">
+    <meta name="keywords" content="expressive piano performance, music synthesis, deep learning, MIDI synthesis, audio generation">
+    <meta name="author" content="Jingjing Tang">
+
+    
+    <title>Towards An Integrated Approach for Expressive Piano Performance Synthesis from Music Scores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <meta name="theme-color" content="#563d7c">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+</head>
+<style>
+    td th {
+        height: 100px;
+        width: 160px;
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
+
+<body>
+    <div class="text-center">
+        <div class="container">
+            <div class="text-wrap" width="200px">
+                <h1 class="pt-5">
+                    Towards An Integrated Approach for Expressive Piano Performance Synthesis from Music Scores
+                </h1>
+                <br>
+            </div>
+            <p style="font-size: 1.3em; margin-bottom: 0;">
+                <a href="https://tangjjbetsy.github.io/">Jingjing Tang<sup>1*</sup></a>&nbsp;
+                <a href="https://ecooper7.github.io">Erica Cooper<sup>2</sup></a>&nbsp;
+                <a href="https://tonywangx.github.io">Xin Wang<sup>2</sup></a>&nbsp;
+                <a href="https://yamagishilab.jp">Junichi Yamagishi<sup>2</sup></a>&nbsp;
+                <a href="https://www.eecs.qmul.ac.uk/~gyorgyf/index.html">George Fazekas<sup>1</sup></a>
+            </p>
+            <p style="margin-top: 20px;">
+                <sup>1</sup>Centre for Digital Music, Queen Mary University of London, UK
+                <br>
+                <sup>2</sup>National Institute of Informatics, Japan
+            </p>
+            <div class="m-3">
+                <a class="btn btn-outline-dark" href="https://arxiv.org/html/2501.10222v1" type="button"><i
+                        class="bi bi-newspaper"></i> Paper</a>
+                <a class="btn btn-outline-dark" href="https://github.com/tangjjbetsy/score-to-audio" type="button">
+                    <i class="bi bi-code-slash"></i> Code</a>
+                <a class="btn btn-outline-dark" href="https://www.youtube.com/watch?v=ySHAgMwDI9E" type="button"> <i
+                        class="bi bi-camera-reels"></i> Video</a>
+                <a class="btn btn-outline-dark" href="https://colab.research.google.com/drive/1J16U55C-uBYgMDasUC7-Ku8zirzjFVQb?usp=sharing" target="_blank" type="button">
+                    <i class="bi bi-play"></i> Colab Demo</a>
+
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4 " style="max-width: 950px;">
+            <div class="container">
+                <hr>
+                <img src="./assets/imgs/S2A.png" alt="architecture" style="width: 70%; align: center; display: block; margin: 0 auto;">
+                <p class="text-center fst-italic">Figure 1: Proposed Integrated System v.s. Proposed Baseline System.</p>
+                <br>
+                <div class="section">
+                <h2 class="text-left">Introduction</h2>
+                <hr>
+                <p class="pr-5 pl-5">
+                    This demo page showcases the results of our research on transforming symbolic music scores into expressive piano performance audio. 
+                    The approach combines a Transformer-based Expressive Performance Rendering (EPR) model with a fine-tuned neural MIDI synthesiser, 
+                    offering a streamlined method for converting inexpressive score MIDI files into rich, expressive piano performances.
+                </p>
+                <p class="pr-5 pl-5">
+                    Our integrated system is designed to directly generate expressive audio performances from score inputs by combining MIDI-to-MIDI (M2M) 
+                    and MIDI-to-Audio (M2A) models. The M2M model is responsible for rendering expressive MIDI files, while the M2A model, which has been 
+                    fine-tuned for this task, generates the corresponding audio outputs. This demo page illustrates the improvement achieved through the 
+                    fine-tuning of the M2A model and presents a comparison of the proposed system (M2M + M2A) with other existing systems.
+                </p>
+                <p class="pr-5 pl-5">
+                    The evaluation conducted in this study highlights the system's effectiveness in reconstructing human-like expressiveness 
+                    and capturing the acoustic ambiance of environments such as concert halls and recording studios. The proposed system is the first of its kind 
+                    to seamlessly convert inexpressive score MIDI files into expressive piano performance audios using purely deep learning models.
+                </p>
+                </div>
+                <br>
+                <!-- Section 1: Improvement of the Fine-tuned M2A Model -->
+                <div class="section">
+                <h2 class="text-left">Fine-tuned M2A Model</h2>
+                <hr>
+                <p class="pr-5 pl-5">
+                    This section demonstrates the improvements achieved by fine-tuning the M2A model. The audio samples (all from test set) before and after fine-tuning are presented 
+                    below along with the groundtruth audio recordings, allowing for a direct comparison of the model's performance.
+                </p>
+                </div>
+                <div class="section">
+                <table class="table table-sm text-center" style="vertical-align: middle;">
+                    <thead>
+                        <tr>
+                            <th><span class="">Model</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 1</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 2</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 3</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 4</span> <br> <span class="detail"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="message">Groundtruth</td>
+                            <td><audio id="A_audio_reference"
+                                onended="audioEnd('A_btn_reference', 'A_audio_reference')">
+                                    <source src="./assets/audios/M2A_cut/01606.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="A_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('A_btn_reference', 'A_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="B_audio_reference"
+                                onended="audioEnd('B_btn_reference', 'B_audio_reference')">
+                                    <source src="./assets/audios/M2A_cut/02374.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="B_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('B_btn_reference', 'B_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="C_audio_reference"
+                                onended="audioEnd('C_btn_reference', 'C_audio_reference')">
+                                    <source src="./assets/audios/M2A_cut/09450.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="C_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('C_btn_reference', 'C_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="D_audio_reference"
+                                onended="audioEnd('D_btn_reference', 'D_audio_reference')">
+                                    <source src="./assets/audios/M2A_cut/10003.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="D_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('D_btn_reference', 'D_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 1: Before Fine-tuning -->
+                        <tr>
+                            <td>M2A (Before Fine-tuning)</td>
+                            <td><audio id="A_audio_before"
+                                onended="audioEnd('A_btn_before', 'A_audio_before')">
+                                    <source src="./assets/audios/M2A_cut/01606_woft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="A_btn_before"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('A_btn_before', 'A_audio_before')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="B_audio_before"
+                                onended="audioEnd('B_btn_before', 'B_audio_before')">
+                                    <source src="./assets/audios/M2A_cut/02374_woft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="B_btn_before"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('B_btn_before', 'B_audio_before')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="C_audio_before"
+                                onended="audioEnd('C_btn_before', 'C_audio_before')">
+                                    <source src="./assets/audios/M2A_cut/09450_woft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="C_btn_before"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('C_btn_before', 'C_audio_before')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="D_audio_before"
+                                onended="audioEnd('D_btn_before', 'D_audio_before')">
+                                    <source src="./assets/audios/M2A_cut/10003_woft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="D_btn_before"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('D_btn_before', 'D_audio_before')">Play</button>
+                                </div>
+                            </td></audio>
+                        </tr>
+                        <!-- Row 2: After Fine-tuning -->
+                        <tr>
+                            <td>M2A (After Fine-tuning)</td>
+                            <td><audio id="A_audio_after"
+                                onended="audioEnd('A_btn_after', 'A_audio_after')">
+                                    <source src="./assets/audios/M2A_cut/01606_ft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="A_btn_after"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('A_btn_after', 'A_audio_after')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="B_audio_after"
+                                onended="audioEnd('B_btn_after', 'B_audio_after')">
+                                    <source src="./assets/audios/M2A_cut/02374_ft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="B_btn_after"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('B_btn_after', 'B_audio_after')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="C_audio_after"
+                                onended="audioEnd('C_btn_after', 'C_audio_after')">
+                                    <source src="./assets/audios/M2A_cut/09450_ft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="C_btn_after"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('C_btn_after', 'C_audio_after')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="D_audio_after"
+                                onended="audioEnd('D_btn_after', 'D_audio_after')">
+                                    <source src="./assets/audios/M2A_cut/10003_ft.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="D_btn_after"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('D_btn_after', 'D_audio_after')">Play</button>
+                                </div>
+                            </td></audio>
+                        </tr> 
+                    </tbody>
+                </table>
+                <ul class="pl-7" style="font-size: 0.8em;">
+                    <li>Sample1: "<i>Fantasiestücke, Op. 12: VI. Ende vom Lied</i>", composed by Robert Schumann, performed by Sviatoslav Richter</li>
+                    <li>Sample2: "<i>English Suite No. 3 in G Minor, BWV 808: VI. Gigue</i>", composed by Johann Sebastian Bach, performed by Friedrich Gulda</li>
+                    <li>Sample3: "<i>12 Etudes, Op. 10: No. 2. in A Minor - Chromatique</i>", composed by Frédéric Chopin, performed by Sviatoslav Richter</li>
+                    <li>Sample4: "<i>24 Préludes, Op. 28: Prélude No. 13 in F-Sharp Major</i>", composed by Frédéric Chopin, performed by Claudio Arrau</li>
+                </ul>
+                </div>
+                <br>
+                <!-- Section 2: Proposed System M2M + M2A Comparison -->
+                <div class="section">
+                <h2 class="text-left">Comparison of Different Systems with Proposed M2M + M2A</h2>
+                <hr>
+                <p class="pr-5 pl-5">
+                    In this section, we present a comparison between the proposed M2M + M2A system and other systems. Audio samples generated by different 
+                    methods, including: 
+                    <ol>
+                        <li>Groundtruth audio recording, </li> 
+                        <li>Groundtruth midi + Pianoteq, </li> 
+                        <li>Groundtruth midi + M2A, </li> 
+                        <li>M2M output + Pianoteq, </li> 
+                        <li>M2M output + M2A (proposed), </li> 
+                        <li>Baseline (proposed), </li> 
+                        <li>Score + Pianoteq, </li> 
+                    </ol>
+                    are provided for comparison. The results demonstrate 
+                    how the integrated system effectively balances musical expressiveness with audio quality, outperforming the baseline models.
+                </p> 
+                <table class="table table-sm text-center" style="vertical-align: middle;">
+                    <thead>
+                        <tr>
+                            <th><span class="">System</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 1</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 2</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 3</span> <br> <span class="detail"></span></th>
+                            <th><span class="">Sample 4</span> <br> <span class="detail"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1: Groundtruth -->
+                        <tr>
+                            <td class="message">Groundtruth Audio Recording</td>
+                            <td><audio id="first_audio_reference"
+                                onended="audioEnd('first_btn_reference', 'first_audio_reference')">
+                                    <source src="./assets/audios/18/A/1_18_A_hp.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="first_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('first_btn_reference', 'first_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="second_audio_reference"
+                                onended="audioEnd('second_btn_reference', 'second_audio_reference')">
+                                    <source src="./assets/audios/18/B/1_18_B_hp.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="second_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('second_btn_reference', 'second_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="third_audio_reference"
+                                onended="audioEnd('third_btn_reference', 'third_audio_reference')">
+                                    <source src="./assets/audios/30/A/1_30_A_hp.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="third_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('third_btn_reference', 'third_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="fourth_audio_reference"
+                                onended="audioEnd('fourth_btn_reference', 'fourth_audio_reference')">
+                                    <source src="./assets/audios/30/C/1_30_C_hp.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="fourth_btn_reference"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('fourth_btn_reference', 'fourth_audio_reference')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 2: Groundtruth midi + Pianoteq -->
+                        <tr>
+                            <td>Groundtruth midi + Pianoteq</td>
+                            <td><audio id="first_audio_pianoteq"
+                                onended="audioEnd('first_btn_pianoteq', 'first_audio_pianoteq')">
+                                    <source src="./assets/audios/18/A/5_18_A_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="first_btn_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('first_btn_pianoteq', 'first_audio_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="second_audio_pianoteq" 
+                                onended="audioEnd('second_btn_pianoteq', 'second_audio_pianoteq')">
+                                    <source src="./assets/audios/18/B/5_18_B_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="second_btn_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('second_btn_pianoteq', 'second_audio_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="third_audio_pianoteq"
+                                onended="audioEnd('third_btn_pianoteq', 'third_audio_pianoteq')">
+                                    <source src="./assets/audios/30/A/5_30_A_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="third_btn_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('third_btn_pianoteq', 'third_audio_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="fourth_audio_pianoteq"
+                                onended="audioEnd('fourth_btn_pianoteq', 'fourth_audio_pianoteq')">
+                                    <source src="./assets/audios/30/C/5_30_C_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="fourth_btn_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('fourth_btn_pianoteq', 'fourth_audio_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 3: Groundtruth midi + M2A -->
+                        <tr>
+                            <td>Groundtruth midi + M2A</td>
+                            <td><audio id="first_audio_m2a"
+                                onended="audioEnd('first_btn_m2a', 'first_audio_m2a')">
+                                    <source src="./assets/audios/18/A/3_18_A_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="first_btn_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('first_btn_m2a', 'first_audio_m2a')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="second_audio_m2a"
+                                onended="audioEnd('second_btn_m2a', 'second_audio_m2a')">
+                                    <source src="./assets/audios/18/B/3_18_B_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="second_btn_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('second_btn_m2a', 'second_audio_m2a')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="third_audio_m2a"
+                                onended="audioEnd('third_btn_m2a', 'third_audio_m2a')">
+                                    <source src="./assets/audios/30/A/3_30_A_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="third_btn_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('third_btn_m2a', 'third_audio_m2a')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="fourth_audio_m2a"
+                                onended="audioEnd('fourth_btn_m2a', 'fourth_audio_m2a')">
+                                    <source src="./assets/audios/30/C/3_30_C_perf.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="fourth_btn_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('fourth_btn_m2a', 'fourth_audio_m2a')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 4: M2M output + Pianoteq -->
+                        <tr>
+                            <td>M2M output + Pianoteq</td>
+                            <td><audio id="first_audio_m2m_pianoteq"
+                                onended="audioEnd('first_btn_m2m_pianoteq', 'first_audio_m2m_pianoteq')">
+                                    <source src="./assets/audios/18/A/8_18_A_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="first_btn_m2m_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('first_btn_m2m_pianoteq', 'first_audio_m2m_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="second_audio_m2m_pianoteq"
+                                onended="audioEnd('second_btn_m2m_pianoteq', 'second_audio_m2m_pianoteq')">
+                                    <source src="./assets/audios/18/B/8_18_B_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="second_btn_m2m_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('second_btn_m2m_pianoteq', 'second_audio_m2m_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="third_audio_m2m_pianoteq"
+                                onended="audioEnd('third_btn_m2m_pianoteq', 'third_audio_m2m_pianoteq')">
+                                    <source src="./assets/audios/30/A/8_30_A_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="third_btn_m2m_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('third_btn_m2m_pianoteq', 'third_audio_m2m_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="fourth_audio_m2m_pianoteq"
+                                onended="audioEnd('fourth_btn_m2m_pianoteq', 'fourth_audio_m2m_pianoteq')">
+                                    <source src="./assets/audios/30/C/8_30_C_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="fourth_btn_m2m_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('fourth_btn_m2m_pianoteq', 'fourth_audio_m2m_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 5: M2M output + M2A -->
+                        <tr>
+                            <td>M2M output + M2A</td>
+                            <td><audio id="first_audio_m2m_m2a"
+                                onended="audioEnd('first_btn_m2m_m2a', 'first_audio_m2m_m2a')">
+                                    <source src="./assets/audios/18/A/6_18_A_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="first_btn_m2m_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('first_btn_m2m_m2a', 'first_audio_m2m_m2a')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="second_audio_m2m_m2a"
+                                onended="audioEnd('second_btn_m2m_m2a', 'second_audio_m2m_m2a')">
+                                    <source src="./assets/audios/18/B/6_18_B_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="second_btn_m2m_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('second_btn_m2m_m2a', 'second_audio_m2m_m2a')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="third_audio_m2m_m2a"
+                                onended="audioEnd('third_btn_m2m_m2a', 'third_audio_m2m_m2a')">
+                                    <source src="./assets/audios/30/A/6_30_A_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="third_btn_m2m_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('third_btn_m2m_m2a', 'third_audio_m2m_m2a')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="fourth_audio_m2m_m2a"
+                                onended="audioEnd('fourth_btn_m2m_m2a', 'fourth_audio_m2m_m2a')">
+                                    <source src="./assets/audios/30/C/6_30_C_generation.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="fourth_btn_m2m_m2a"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('fourth_btn_m2m_m2a', 'fourth_audio_m2m_m2a')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 6: Baseline -->
+                        <tr>
+                            <td>Baseline</td>
+                            <td><audio id="first_audio_baseline"
+                                onended="audioEnd('first_btn_baseline', 'first_audio_baseline')">
+                                    <source src="./assets/audios/18/A/9_18_A_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="first_btn_baseline"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('first_btn_baseline', 'first_audio_baseline')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="second_audio_baseline"
+                                onended="audioEnd('second_btn_baseline', 'second_audio_baseline')">
+                                    <source src="./assets/audios/18/B/9_18_B_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="second_btn_baseline"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('second_btn_baseline', 'second_audio_baseline')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="third_audio_baseline"
+                                onended="audioEnd('third_btn_baseline', 'third_audio_baseline')">
+                                    <source src="./assets/audios/30/A/9_30_A_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="third_btn_baseline"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('third_btn_baseline', 'third_audio_baseline')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="fourth_audio_baseline"
+                                onended="audioEnd('fourth_btn_baseline', 'fourth_audio_baseline')">
+                                    <source src="./assets/audios/30/C/9_30_C_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="fourth_btn_baseline"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('fourth_btn_baseline', 'fourth_audio_baseline')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 7: Score + Pianoteq -->
+                        <tr>
+                            <td>Score + Pianoteq</td>
+                            <td><audio id="first_audio_score_pianoteq"
+                                onended="audioEnd('first_btn_score_pianoteq', 'first_audio_score_pianoteq')">
+                                    <source src="./assets/audios/18/A/11_18_A_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="first_btn_score_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('first_btn_score_pianoteq', 'first_audio_score_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="second_audio_score_pianoteq"
+                                onended="audioEnd('second_btn_score_pianoteq', 'second_audio_score_pianoteq')">
+                                    <source src="./assets/audios/18/B/11_18_B_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="second_btn_score_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('second_btn_score_pianoteq', 'second_audio_score_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="third_audio_score_pianoteq"
+                                onended="audioEnd('third_btn_score_pianoteq', 'third_audio_score_pianoteq')">
+                                    <source src="./assets/audios/30/A/11_30_A_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="third_btn_score_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('third_btn_score_pianoteq', 'third_audio_score_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                            <td><audio id="fourth_audio_score_pianoteq"
+                                onended="audioEnd('fourth_btn_score_pianoteq', 'fourth_audio_score_pianoteq')">
+                                    <source src="./assets/audios/30/C/11_30_C_score.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div>
+                                    <button style="width:100%" id="fourth_btn_score_pianoteq"
+                                        class="btn btn-secondary"
+                                        onclick="togglePlay('fourth_btn_score_pianoteq', 'fourth_audio_score_pianoteq')">Play</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ul class="pl-7" style="font-size: 0.8em;">
+                    <li>Sample1 & 2: "<i>Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3 'The Hunt'</i>", composed by Ludwig van Beethoven, performed by Daniel Barenboim</li>
+                    <li>Sample3 & 4: "<i>Piano Sonata No. 30 in E, Op. 109: 2. Prestissimo</i>", composed by Ludwig van Beethoven, performed by Claudio Arrau</li>
+                </ul>
+            </div>
+            <br>
+            <!-- Section 3: More and Longer Generation Samples -->
+            <div class="section">
+            <h2 class="text-left">Longer Generation Samples</h2>
+            <hr>
+            <p class="pr-5 pl-5">
+                In this section, we present more and longer samples generated with our proposed M2M + M2A system and the baseline systems. The results demonstrate 
+                how the integrated system effectively balances musical expressiveness with audio quality, outperforming the baseline models.
+            </p> 
+            <table class="table table-sm text-center" style="vertical-align: middle;">
+                <thead>
+                    <tr>
+                        <th><span class="">Model</span> <br> <span class="detail"></span></th>
+                        <th><span class="">Sample 1</span> <br> <span class="detail"></span></th>
+                        <th><span class="">Sample 2</span> <br> <span class="detail"></span></th>
+                        <th><span class="">Sample 3</span> <br> <span class="detail"></span></th>
+                        <th><span class="">Sample 4</span> <br> <span class="detail"></span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>M2M+M2A</td>
+                        <td><audio id="long_first_m2m"
+                            onended="audioEnd('long_first_btn_m2m', 'long_first_m2m')">
+                                <source src="./assets/audios/M2M+M2A_cut/06197.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_first_btn_m2m"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_first_btn_m2m', 'long_first_m2m')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_second_m2m" 
+                            onended="audioEnd('long_second_btn_m2m', 'long_second_m2m')">
+                                <source src="./assets/audios/M2M+M2A_cut/06393.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_second_btn_m2m"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_second_btn_m2m', 'long_second_m2m')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_third_m2m"
+                            onended="audioEnd('long_third_btn_m2m', 'long_third_m2m')">
+                                <source src="./assets/audios/M2M+M2A_cut/06605.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_third_btn_m2m"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_third_btn_m2m', 'long_third_m2m')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_fourth_m2m"
+                            onended="audioEnd('long_fourth_btn_m2m', 'long_fourth_m2m')">
+                                <source src="./assets/audios/M2M+M2A_cut/07604.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_fourth_btn_m2m"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_fourth_btn_m2m', 'long_fourth_m2m')">Play</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Baseline</td>
+                        <td><audio id="long_first_baseline"
+                            onended="audioEnd('long_first_btn_baseline', 'long_first_baseline')">
+                                <source src="./assets/audios/Baseline_cut/06197.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_first_btn_baseline"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_first_btn_baseline', 'long_first_baseline')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_second_baseline"
+                            onended="audioEnd('long_second_btn_baseline', 'long_second_baseline')">
+                                <source src="./assets/audios/Baseline_cut/06393.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_second_btn_baseline"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_second_btn_baseline', 'long_second_baseline')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_third_baseline"
+                            onended="audioEnd('long_third_btn_baseline', 'long_third_baseline')">
+                                <source src="./assets/audios/Baseline_cut/06605.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_third_btn_baseline"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_third_btn_baseline', 'long_third_baseline')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_fourth_baseline"
+                            onended="audioEnd('long_fourth_btn_baseline', 'long_fourth_baseline')">
+                                <source src="./assets/audios/Baseline_cut/07604.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_fourth_btn_baseline"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_fourth_btn_baseline', 'long_fourth_baseline')">Play</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Groundtruth</td>
+                        <td><audio id="long_first_gt"
+                            onended="audioEnd('long_first_btn_gt', 'long_first_gt')">
+                                <source src="./assets/audios/original_cut/06197.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_first_btn_gt"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_first_btn_gt', 'long_first_gt')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_second_gt"
+                            onended="audioEnd('long_second_btn_gt', 'long_second_gt')">
+                                <source src="./assets/audios/original_cut/06393.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_second_btn_gt"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_second_btn_gt', 'long_second_gt')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_third_gt"
+                            onended="audioEnd('long_third_btn_gt', 'long_third_gt')">
+                                <source src="./assets/audios/original_cut/06605.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_third_btn_gt"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_third_btn_gt', 'long_third_gt')">Play</button>
+                            </div>
+                        </td>
+                        <td><audio id="long_fourth_gt"
+                            onended="audioEnd('long_fourth_btn_gt', 'long_fourth_gt')">
+                                <source src="./assets/audios/original_cut/07604.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div>
+                                <button style="width:100%" id="long_fourth_btn_gt"
+                                    class="btn btn-secondary"
+                                    onclick="togglePlay('long_fourth_btn_gt', 'long_fourth_gt')">Play</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul class="pl-7" style="font-size: 0.8em;">
+                <li>Sample1: "<i>Piano Sonata No. 3 in C, Op. 2 No. 3: 2. Adagio</i>", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+                <li>Sample2: "<i>Piano Sonata No. 9 in E, Op. 14 No. 1: 1. Allegro</i>", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+                <li>Sample3: "<i>Piano Sonata No. 31 in A-Flat Major, Op. 110: 2. Allegro molto</i>", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+                <li>Sample4: "<i>Piano Sonata No. 18 in E-Flat Major, Op. 31 No. 3: IV. Presto con fuoco</i>", composed by Ludwig van Beethoven, performed by Alfred Brendel</li>
+            </ul>
+            </div>
+        </div>
+    </div>
+    <footer align="center" class="mt-4">
+        <p>&copy; 2025 Jingjing Tang, Center for Digital Music, Queen Mary University of London. All rights reserved.</p>
+    </footer>
+
+    <script type="text/javascript" src="https://cdn.rawgit.com/pcooksey/bibtex-js/5ccf967/src/bibteA_js.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" 
+        crossorigin="anonymous"></script>
+
+    <script>
+        function togglePlay(btnId, audioId) {
+            var myButton = document.getElementById(btnId);
+            var myAudio = document.getElementById(audioId);
+            if (myAudio.paused) {
+                myAudio.play();
+                myButton.innerHTML = "Stop";
+                myButton.className = "btn btn-primary"
+            }
+            else {
+                myAudio.pause();
+                myButton.innerHTML = "Play";
+                myButton.className = "btn btn-secondary"
+            }
+            return
+        }
+
+        function audioEnd(btnId, audioId) {
+            var myButton = document.getElementById(btnId);
+            var myAudio = document.getElementById(audioId);
+            myButton.innerHTML = "Play";
+            myButton.className = "btn btn-secondary"
+            return
+        }
+    </script>
+
+</body>
+</html>
