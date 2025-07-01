@@ -6,12 +6,11 @@ from random import shuffle
 import torch
 from torch.utils.data import DataLoader
 
-from data import AudioDataset, URMPDataset
-from obj_eval import ChromaEvaluation, MIDISpecEvaluation, TimbreEvaluation
+from data import AudioDataset
+from obj_eval import ChromaEvaluation, MIDISpecEvaluation
 
 
 FEAT_EXTR = {
-    'timbre': TimbreEvaluation,
     'midispec': MIDISpecEvaluation,
     'chroma': ChromaEvaluation,
 }

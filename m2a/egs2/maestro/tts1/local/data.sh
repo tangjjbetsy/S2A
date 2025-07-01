@@ -55,7 +55,7 @@ if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
     # generate wav.scp & text in each dset
     # wav.scp: wav_id wav_dir
     # text: wav_id midi_dir
-    [ -e data ] && rm -r data
+    [ -e ${datadir} ] && rm -r ${datadir}
     # python local/data_parse.py "${db_root}" data
     python local/data_parse.py ${path_to_data} ${datadir} ${mode} ${inference_path}
 fi
@@ -67,18 +67,18 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     # text_segments.scp (eg: segid data/{train/val/text}/text_segments/{segid}.npz)
     if [ ${mode} != "inference" ]; then
         for dset in "${train_set}" "${valid_set}" ${test_sets}; do
-            python local/data_segments.py main --wav_dir data/"${dset}"/wav.scp \
-                --wav_segments_dir data/"${dset}"/wav_segments \
-                --text_dir data/"${dset}"/text \
-                --text_segments_dir data/"${dset}"/text_segments \
+            python local/data_segments.py main --wav_dir ${datadir}/"${dset}"/wav.scp \
+                --wav_segments_dir ${datadir}/"${dset}"/wav_segments \
+                --text_dir ${datadir}/"${dset}"/text \
+                --text_segments_dir ${datadir}/"${dset}"/text_segments \
                 --sample_rate ${sample_rate} \
                 --num_segment_frame ${num_segment_frame}
         done
     else
         for dset in ${test_sets}; do
             python local/data_segments.py inference \
-                --text_dir data/"${dset}"/text \
-                --text_segments_dir data/"${dset}"/text_segments \
+                --text_dir ${datadir}/"${dset}"/text \
+                --text_segments_dir ${datadir}/"${dset}"/text_segments \
                 --sample_rate ${sample_rate} \
                 --num_segment_frame ${num_segment_frame}
         done
@@ -91,30 +91,30 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     # make utt2spk & spk2utt
     if [ ${mode} != "inference" ]; then
         for dset in "${train_set}" "${valid_set}" ${test_sets}; do
-            utt2spk=data/"${dset}"/utt2spk
-            spk2utt=data/"${dset}"/spk2utt
+            utt2spk=${datadir}/"${dset}"/utt2spk
+            spk2utt=${datadir}/"${dset}"/spk2utt
             [ -e ${utt2spk} ] && rm ${utt2spk}
             [ -e ${spk2utt} ] && rm ${spk2utt}
-            
-            mv data/"${dset}"/wav.scp data/"${dset}"/wav_original.scp
-            mv data/"${dset}"/wav_segments.scp data/"${dset}"/wav.scp
-            mv data/"${dset}"/text data/"${dset}"/text_original
-            mv data/"${dset}"/text_segments.scp data/"${dset}"/text
 
-            python local/generate_utt2spk.py data/"${dset}"/wav.scp data/"${dset}"/utt2spk
+            mv ${datadir}/"${dset}"/wav.scp ${datadir}/"${dset}"/wav_original.scp
+            mv ${datadir}/"${dset}"/wav_segments.scp ${datadir}/"${dset}"/wav.scp
+            mv ${datadir}/"${dset}"/text ${datadir}/"${dset}"/text_original
+            mv ${datadir}/"${dset}"/text_segments.scp ${datadir}/"${dset}"/text
+
+            python local/generate_utt2spk.py ${datadir}/"${dset}"/wav.scp ${datadir}/"${dset}"/utt2spk
             utils/utt2spk_to_spk2utt.pl ${utt2spk} > ${spk2utt}
         done
     else
         for dset in ${test_sets}; do
-            utt2spk=data/"${dset}"/utt2spk
-            spk2utt=data/"${dset}"/spk2utt
+            utt2spk=${datadir}/"${dset}"/utt2spk
+            spk2utt=${datadir}/"${dset}"/spk2utt
             [ -e ${utt2spk} ] && rm ${utt2spk}
             [ -e ${spk2utt} ] && rm ${spk2utt}
 
-            mv data/"${dset}"/text data/"${dset}"/text_original
-            mv data/"${dset}"/text_segments.scp data/"${dset}"/text
+            mv ${datadir}/"${dset}"/text ${datadir}/"${dset}"/text_original
+            mv ${datadir}/"${dset}"/text_segments.scp ${datadir}/"${dset}"/text
 
-            python local/generate_utt2spk.py data/"${dset}"/text data/"${dset}"/utt2spk
+            python local/generate_utt2spk.py ${datadir}/"${dset}"/text ${datadir}/"${dset}"/utt2spk
             utils/utt2spk_to_spk2utt.pl ${utt2spk} > ${spk2utt}
         done
     fi

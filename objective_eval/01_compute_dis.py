@@ -1,8 +1,8 @@
-import scipy.stats\
+import scipy.stats
 import argparse    
+from obj_eval import ChromaEvaluation, MIDISpecEvaluation
 
 FEAT_EXTR = {
-    'timbre': TimbreEvaluation,
     'midispec': MIDISpecEvaluation,
     'chroma': ChromaEvaluation,
 }
