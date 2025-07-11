@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 
 from data import AudioDataset
 from obj_eval import ChromaEvaluation, MIDISpecEvaluation
+from tqdm import tqdm
 
 
 FEAT_EXTR = {
@@ -56,14 +57,14 @@ def main():
         if not os.path.isdir(save_dir):
             os.makedirs(save_dir)
 
-        for _, batch in enumerate(dataloader):
+        for _, batch in tqdm(enumerate(dataloader)):
             wav = batch['wav']
             wav_name = batch['wav_name'][0]
             feat = model.inference(wav)  # feat (T, F)
             if isinstance(feat, torch.Tensor):
                 feat = feat.cpu().numpy()
             feat_dir = os.path.join(
-                save_dir, wav_name.split("_")[-1] + '.npy'
+                save_dir, wav_name + '.npy'
             )
             feat.tofile(feat_dir, format="<f4")
 

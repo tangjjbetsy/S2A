@@ -1,6 +1,9 @@
 import scipy.stats
-import argparse    
+import argparse   
+import numpy as np
+import pandas as pd
 from obj_eval import ChromaEvaluation, MIDISpecEvaluation
+import glob
 
 FEAT_EXTR = {
     'midispec': MIDISpecEvaluation,
@@ -38,21 +41,27 @@ if __name__ == '__main__':
                         choices=['chroma', 'midispec'],
                         default='chroma', 
                         help='the type of feature to extract')
-    parser.add_argument('con_sys',
+    parser.add_argument('--con_sys',
                         type=str,
                         help='the directory of data information json file')
-    parser.add_argument('exp_sys',
+    parser.add_argument('--exp_sys',
                         type=str,
                         help='the directory of data information json file')
+    
+    args = parser.parse_args()
 
     files = glob.glob("output/{}/{}/*.npy".format(args.feat, args.con_sys))
     feature_extractor_class = FEAT_EXTR[args.feat]
     model = feature_extractor_class()
     
+    dis_list = []
+    
     for i in files:
         exp_feat_dir = i
         con_feat_dir = i.replace(f"{args.con_sys}", f"{args.exp_sys}")
         g_dim = 512
+        
+        idx = i.split("/")[-1].split(".")[0].split("_")[0]
 
         exp_feat = f_read_raw_mat(exp_feat_dir, col=g_dim)
         con_feat = f_read_raw_mat(con_feat_dir, col=g_dim)
