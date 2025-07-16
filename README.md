@@ -2,6 +2,7 @@
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1J16U55C-uBYgMDasUC7-Ku8zirzjFVQb?usp=sharing)
 [![arXiv](https://img.shields.io/badge/arXiv-2501.10222v1-b31b1b.svg)](https://arxiv.org/abs/2501.10222v1)
 ![Conference](https://img.shields.io/badge/Conference-ICASSP%202025-green)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://zenodo.org/records/15524693/files/LICENSE.txt?download=1)
 
 This repository contains the official implementation of our ICASSP 2025 [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10890623)
 
